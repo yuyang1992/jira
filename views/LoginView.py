@@ -36,10 +36,10 @@ class LoginView(QWidget):
         loginBtn = QPushButton('登录', self)
         loginBtn.clicked.connect(lambda: self.onLogin(navigation))
         parentGroup.addWidget(loginBtn, 2, 0, 1, 2, Qt.AlignTop | Qt.AlignCenter)
-        self.setLayout(contentGroup)
-        self.setGeometry(600, 600, 600, 600)
         self.setWindowTitle("巧房jira自动化工具")
-        self.show()
+
+        self.setLayout(contentGroup)
+
 
     def changeName(self, text):
         self.name = text

@@ -1,11 +1,11 @@
-import datetime
 import json
 import math
 import sys
 import time
+import pytz
+import datetime
 
 import pandas as pd
-import pytz
 import requests
 from PyQt5.QtWidgets import QApplication, QVBoxLayout
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -138,46 +138,9 @@ dayBugCount = [{
 }]
 
 
-def searchUserStory(jira, jql):
-    issues = jira.search_issues(jql, maxResults=10000)
-    for issue in issues.iterable:
-        createTime = utc_to_local(issue.fields.created[0:19])
-        statusName = issue.fields.status.name
-        status = issue.fields.status.id
-        updateTime = utc_to_local(issue.fields.updated[0:19]) if status == '6' else None
-        nowTime = datetime.datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        resolutionTime = utc_to_local(
-            issue.fields.resolutiondate[0:19]) if issue.fields.resolutiondate is not None else None
-        issue.fields.diff = round(
-            (parse(updateTime if status == 6 else nowTime) - parse(
-                createTime)).total_seconds() / 3600 / 24, 1)
-        issue.fields.createTime = createTime
-        issue.fields.statusName = statusName
-        issue.fields.status = status
-        issue.fields.resolutionTime = resolutionTime
-        issue.fields.updateTime = updateTime
-    data = map(lambda issue: {
-        "问题关键字": issue.key,
-        "概要": issue.fields.summary,
-        "标签": issue.fields.labels,
-        "预估时间": issue.fields.aggregatetimeoriginalestimate / 3600 / 8 if issue.fields.aggregatetimeoriginalestimate is not None else 0,
-        "经办人": issue.fields.assignee.displayName,
-        "问题创建时间": issue.fields.createTime,
-        "问题解决时间": issue.fields.resolutionTime,
-        "问题更新时间": issue.fields.updateTime,
-        "状态": issue.fields.status,
-        "状态名称": issue.fields.statusName,
-        "平均完成时间": issue.fields.diff,
-        "子任务": issue.fields.subtasks,
-        "备注": ""
-    },
-               issues.iterable)
-    fieldsDF = pd.DataFrame(data)
-    return fieldsDF
 
 
-def diffTime(endTime, startTime):
-    return round((parse(endTime) - parse(startTime)).total_seconds() / 3600 / 24, 1)
+
 
 
 def searchSubTask(jira, maxResults=None):
@@ -236,81 +199,6 @@ def searchIterationSummary(jira, jql):
     print(fieldsDF)
 
 
-def countBugFixTime(dataFrame):
-    data = []
-    statusArray = dataFrame["状态"]
-    for index in statusArray.index:
-        time = diffTime(dataFrame["问题解决时间"][index], dataFrame["问题创建时间"][index]) if (
-                statusArray[index] == "5") else 0
-        data.append(time * 24)
-    return pd.Series(data)
-
-
-def countBugVerifyTime(dataFrame):
-    data = []
-    statusArray = dataFrame["状态"]
-    for index in statusArray.index:
-        time = diffTime(dataFrame["问题更新时间"][index], dataFrame["问题解决时间"][index]) if (
-                statusArray[index] == "6") else 0
-        data.append(time * 24)
-    return pd.Series(data)
-
-
-def searchDayIssue(name, jira, jql):
-    fieldsDF = searchUserStory(jira, jql)
-    newDF = fieldsDF.assign(
-        Bug修复时间=lambda df: countBugFixTime(df)).assign(
-        Bug验证时间=lambda df: countBugVerifyTime(df))
-    print(fieldsDF.shape[0])
-    unFixCount = newDF["状态"].map(lambda item: 1 if item == "1" else 0).sum()
-    unVerifyCount = newDF["状态"].map(lambda item: 1 if item == "5" else 0).sum()
-
-    groups = newDF.filter(items=['经办人', "Bug修复时间", "Bug验证时间"], axis=1).groupby("经办人",
-
-                                                                               sort=True)
-    bugCountDF = groups.mean().round(1).assign(Bug平均数量=lambda item: groups.size()).sort_values(
-        by=["Bug平均数量"], ascending=False)
-    bugSeries = bugCountDF.mean().round(1)
-
-    return pd.DataFrame(bugSeries.to_dict(), index=[name]).assign(未修复bug数量=unFixCount).assign(
-        未验证bug数量=unVerifyCount).assign(Bug总数=fieldsDF.shape[0])
-
-
-def computeSubTime(jira, subTasks):
-    time = 0
-    for task in subTasks:
-        issue = jira.issue(task.key)
-        status = issue.fields.status.id
-        if status == "6" or status == "5":
-            time = time + issue.fields.aggregatetimeoriginalestimate
-
-    return time
-
-
-def storyCount(name, jira, jql):
-    df = searchUserStory(jira, jql)
-    storyCount = df.shape
-    completedCount = df["状态"].map(lambda item: 1 if item == "6" else 0).sum()
-    storyRollBack = df["标签"].map(lambda item: 1 if "需求移交打回" in item else 0).sum()
-    developRollBack = df["标签"].map(lambda item: 1 if "提测打回" in item else 0).sum()
-    serverRollBack = df["标签"].map(lambda item: 1 if "后端提测打回" in item else 0).sum()
-    productRollBack = df["标签"].map(lambda item: 1 if "产品验收打回" in item else 0).sum()
-    uiRollBack = df["标签"].map(lambda item: 1 if "视觉走查打回" in item else 0).sum()
-    testSelf = df["标签"].map(lambda item: 1 if "狗食" in item else 0).sum()
-    acutalCompletedTime = df["子任务"].map(lambda item: computeSubTime(jira, item)).sum() / 3600 / 8
-    planTime = df["预估时间"].sum()
-    data = [{"总计划完成个数": storyCount[0],
-             "总计划实际完成个数": completedCount,
-             "计划完成工作量": planTime,
-             "实际完成工作量": acutalCompletedTime,
-             "需求移交打回个数": storyRollBack,
-             "提测打回": developRollBack,
-             "后端提测打回": serverRollBack,
-             "产品验收打回": productRollBack,
-             "视觉走查打回": uiRollBack,
-             "狗食": testSelf}]
-    return pd.DataFrame(data, index=[name])
-
 
 def uploadPhoto(fileName, title):
     headers = {
@@ -336,45 +224,10 @@ def uploadPhoto(fileName, title):
     #             title)
 
 
-def dingdingMsg(dingdingRobot, data):
-    headers = {'Content-Type': 'application/json'}
-    dingdingPost = requests.post(dingdingRobot, data=json.dumps(data), headers=headers)
-    print(dingdingPost.text)
 
 
-def completedIssueCount(jira, data, callBack, dingdingRobot=dingdingTest):
-    allOnLinedata = []
-    title = data["title"]
-    for onLineBean in data["data"]:
-        df = searchUserStory(jira, onLineBean["jql"])
-        accumulatePD = pd.DataFrame(df.mean(numeric_only="平均完成时间"))
-        onLineBean["totalCount"] = df.shape[0]
-
-        onLineBean["meanTime"] = int(
-            0 if accumulatePD.empty else accumulatePD.loc["平均完成时间", 0])
-        onLineBean["timeTitle"] = "平均完成时间" if onLineBean["type"] == 1 else "平均等待时间"
-        allOnLinedata.append(callBack(onLineBean))
-    dingMsg = {
-        "msgtype": "markdown",
-        "markdown": {
-            "title": "{title}\n\n".format(title=title),
-            "text": "## {title}\n\n".format(title=title) + "\n\n".join(allOnLinedata)
-        },
-        "at": {
-            "isAtAll": False
-        }
-    }
-
-    dingdingMsg(dingdingRobot, dingMsg)
 
 
-def utc_to_local(utc_time_str, utc_format='%Y-%m-%dT%H:%M:%S'):
-    local_tz = pytz.timezone('Asia/Shanghai')  # 定义本地时区
-    utc_dt = datetime.datetime.strptime(utc_time_str, utc_format)  # 讲世界时间的格式转化为datetime.datetime格式
-    local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(
-        local_tz)  # 想将datetime格式添加上世界时区，然后astimezone切换时区：世界时区==>本地时区
-    formatTime = int(time.mktime(local_dt.timetuple()))
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(formatTime))
 
 
 def searchCustomerNeed(jira):

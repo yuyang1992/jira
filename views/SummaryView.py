@@ -1,6 +1,8 @@
-from PyQt5.QtCore import Qt, QDateTime, QTime
+from PyQt5.QtCore import Qt, QDateTime
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QGridLayout, QLineEdit, QPushButton, \
     QComboBox, QDateTimeEdit
+
+from dp.jiraDP import JiraDP
 
 
 class SummaryView(QWidget):
@@ -55,4 +57,4 @@ class SummaryView(QWidget):
         self.setLayout(contentGroup)
 
     def exportExcel(self):
-        print("导出excel")
+        print(JiraDP().exportSummrayExcel("spint08"))
