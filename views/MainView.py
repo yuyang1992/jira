@@ -1,11 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QListWidget,QStackedLayout
-from views.PlanView import PlanView
-from views.SummaryView import SummaryView
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QStackedLayout
 
+from views.CustomerCountView import CustomerCountView
 from views.PlanView import PlanView
 from views.SummaryView import SummaryView
-from views.CustomerCountView import CustomerCountView
 
 
 class MainView(QWidget):
@@ -33,7 +30,8 @@ class MainView(QWidget):
         parentGroup.addLayout(leftGroup, 1)
         parentGroup.addLayout(rightGroup, 3)
         leftList.setDragEnabled(True)
-        leftList.itemSelectionChanged.connect(lambda :qStackedLayout.setCurrentIndex(leftList.currentRow()))
+        leftList.itemSelectionChanged.connect(
+            lambda: qStackedLayout.setCurrentIndex(leftList.currentRow()))
         self.setLayout(parentGroup)
 
     def show(self):

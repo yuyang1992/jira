@@ -412,6 +412,11 @@ def job():
     # createExcel(searchUserStory(jira,
     #                             "project = SAAS2 AND issuetype in (任务, 用户故事) AND Sprint = 232 AND assignee in (nan.xia, zhen.xu, huainan.qu, jingyan.wan, haitao.cao, li.zhang)"))
     # searchDayIssue()
+    host = "https://jira.qiaofangyun.com"
+    options = {'server': host}
+    print("开始登录...")
+    jira = JIRA(options, basic_auth=('huainan.qu', 'Qiaofang123'))
+    print("登录成功...")
     searchCustomerNeed(jira)
     searchDayBug(jira)
     print("定时任务")
@@ -422,32 +427,29 @@ def mergeDF(bugDF, leftName, storyDF, rightName):
     pass
 
 
-def searchGroupInfo(jira):
-    for group in groups:
-        groupInfo = jira.group_members(group["name"])
-        members = []
-        for k in groupInfo:
-            members.append(groupInfo[k]["fullname"])
-        group["members"] = members
-    host = "https://jira.qiaofangyun.com"
-    options = {'server': host}
-    print("开始登录...")
-    jira = JIRA(options, basic_auth=('huainan.qu', 'Qiaofang123'))
-    print("登录成功...")
-    # timeTask(9, 12)
+def searchGroupInfo():
+    # for group in groups:
+    #     groupInfo = jira.group_members(group["name"])
+    #     members = []
+    #     for k in groupInfo:
+    #         members.append(groupInfo[k]["fullname"])
+    #     group["members"] = members
 
-    bugDF = searchDayIssue("sprint08", jira,
-                           "project = SAAS2 AND issuetype in (Bug, 故障) and createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)")
+    timeTask(9, 22)
 
-    print(bugDF)
-    storyCountDF = storyCount("sprint08", jira,
-                              "project = SAAS2 AND issuetype in (用户故事, 任务) and createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)")
-    print(storyCountDF)
-    print(mergeDF(bugDF, "sprint08", storyCountDF, "sprint08"))
+    # bugDF = searchDayIssue("sprint08", jira,
+    #                        "project = SAAS2 AND issuetype in (Bug, 故障) and createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)")
+    #
+    # print(bugDF)
+    # storyCountDF = storyCount("sprint08", jira,
+    #                           "project = SAAS2 AND issuetype in (用户故事, 任务) and createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)")
+    # print(storyCountDF)
+    # print(mergeDF(bugDF, "sprint08", storyCountDF, "sprint08"))
     # print(groups)
 
 
 if __name__ == '__main__':
+    # searchGroupInfo()
     app = QApplication(sys.argv)
 
     # ui = JiraKit()

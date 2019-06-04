@@ -1,6 +1,6 @@
-from PyQt5.Qt import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGridLayout, QLineEdit, \
-    QPushButton
+from PyQt5.QtCore import Qt, QDateTime, QTime
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QGridLayout, QLineEdit, QPushButton, \
+    QComboBox, QDateTimeEdit
 
 
 class SummaryView(QWidget):
@@ -13,30 +13,46 @@ class SummaryView(QWidget):
 
     def initView(self):
         contentGroup = QVBoxLayout()
-        contentGroup.addStretch(1)
         parentGroup = QGridLayout()
         contentGroup.addLayout(parentGroup, 1)
         contentGroup.addStretch(1)
-        userNameLable = QLabel("账号")
-        userNameEdit = QLineEdit()
 
-        parentGroup.addWidget(userNameLable, 0, 0)
-        parentGroup.addWidget(userNameEdit, 0, 1)
+        # 小组类别
+        groupLable = QLabel("小组")
+        groupComBox = QComboBox()
+        groupComBox.addItems(["房客", "交易", "公共组", "移动端"])
+        parentGroup.addWidget(groupLable, 0, 0)
+        parentGroup.addWidget(groupComBox, 0, 1)
         # userNameEdit.textChanged.connect(self.changeName)
 
-        userPWLable = QLabel("密码")
+        # 时间
+        startEimeLable = QLabel("开始时间")
+        startTimeEdit = QDateTimeEdit(QDateTime.currentDateTime())
+        startTimeEdit.setDisplayFormat('yyyy-MM-dd')
+        startTimeEdit.setCalendarPopup(True)
 
-        userPWEdit = QLineEdit()
-        parentGroup.addWidget(userPWLable, 1, 0)
-        parentGroup.addWidget(userPWEdit, 1, 1)
+        endTimeLable = QLabel("结束时间")
+        endTimeEdit = QDateTimeEdit(QDateTime.currentDateTime())
+        endTimeEdit.setDisplayFormat('yyyy-MM-dd')
+        endTimeEdit.setCalendarPopup(True)
+
+        parentGroup.addWidget(startEimeLable, 1, 0)
+        parentGroup.addWidget(startTimeEdit, 1, 1)
+        parentGroup.addWidget(endTimeLable, 2, 0)
+        parentGroup.addWidget(endTimeEdit, 2, 1)
+
+        # 迭代版本
+        spirntLable = QLabel("迭代")
+        spirntEdit = QLineEdit()
+        parentGroup.addWidget(spirntLable, 3, 0)
+        parentGroup.addWidget(spirntEdit, 3, 1)
 
         # userPWEdit.textChanged.connect(self.changePW)
 
-        loginBtn = QPushButton('登录', self)
-        # loginBtn.clicked.connect(lambda: self.onLogin(self.navigation))
-        parentGroup.addWidget(loginBtn, 2, 0, 1, 2, Qt.AlignTop | Qt.AlignCenter)
-        parentGroup = QHBoxLayout()
-        self.setLayout(parentGroup)
+        loginBtn = QPushButton('导出', self)
+        loginBtn.clicked.connect(lambda: self.exportExcel())
+        parentGroup.addWidget(loginBtn, 4, 0, 1, 2, Qt.AlignTop | Qt.AlignCenter)
+        self.setLayout(contentGroup)
 
-    def show(self):
-        self.show()
+    def exportExcel(self):
+        print("导出excel")
