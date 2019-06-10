@@ -11,107 +11,107 @@ dingdingTest = "https://oapi.dingtalk.com/robot/send?access_token=edd1d68e9440e0
 onlineDingDing = "https://oapi.dingtalk.com/robot/send?access_token=99b79b6f4949bf156da40ee500cee9bc881c4f4616fe17338c1663dccfdc8fb6"
 dayBugDingDing = "https://oapi.dingtalk.com/robot/send?access_token=ad91f27b12153eade172f3a92a4d563a308c13bf56ec3ad3e0904cfba10c3aa1"
 userIssueInfo = [{"title": "已完成总数",
-                  "type": 1,
+                  "type": "completed-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11350",
-                  "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status = Closed AND labels not in (不予解决, 暂不处理)"},
+                  "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status = Closed AND labels not in (不予解决, 暂不处理) AND resolution in (已解决, Done, 完成)"},
 
                  {"title": "未完成总数",
-                  "type": 2,
+                  "type": "uncompleted-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11351 ",
                   "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status != Closed AND labels not in (不予解决, 暂不处理)"},
 
                  {"title": "房客楼未完成",
-                  "type": 3,
+                  "type": "house-uncompleted-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11358",
                   "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status != Closed AND labels not in (不予解决, 暂不处理) AND component in (房源, 客源, 楼盘字典, 带看) AND (labels not in (移动端, iOS, IOS, Android) OR labels is EMPTY)"},
 
                  {"title": "交易组未完成",
-                  "type": 4,
+                  "type": "transaction-uncompleted-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11357",
                   "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status != Closed AND labels not in (不予解决, 暂不处理) AND component in (交易) AND (labels not in (移动端, iOS, IOS, Android) OR labels is EMPTY)"},
 
                  {"title": "公共组未完成",
-                  "type": 5,
+                  "type": "common-uncompleted-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11359",
                   "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status != Closed AND labels not in (不予解决, 暂不处理) AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 报表, 主页) AND (labels not in (移动端, iOS, IOS, Android) OR labels is EMPTY)"},
                  {"title": "移动端未完成",
-                  "type": 6,
+                  "type": "mobile-uncompleted-customer-story",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11360",
                   "jql": "project = SAAS2 AND issuetype = 用户故事 AND 客户提需求日期 is not EMPTY AND status != Closed AND labels not in (不予解决, 暂不处理) AND (labels in (移动端, iOS, IOS, Android) OR component in (移动端))"}
                  ]
 
 onlineBugInfo = [{"title": "已完成总数",
-                  "type": 1,
+                  "type": "completed-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11352",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status = Closed"},
                  {"title": "未完成总数",
-                  "type": 2,
+                  "type": "uncompleted-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11353",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status != Closed"},
 
                  {"title": "房客楼未完成",
-                  "type": 3,
+                  "type": "house-uncompleted-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11361",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status != Closed AND component in (房源, 客源, 楼盘字典, 带看) AND (labels not in (移动端, iOS, IOS, Android) OR labels is EMPTY)"},
 
                  {"title": "交易组未完成",
-                  "type": 4,
+                  "type": "transaction-uncompleted-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11362",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status != Closed AND component in (交易) AND (labels not in (移动端, iOS, IOS, Android) OR labels is not EMPTY)"},
 
                  {"title": "公共组未完成",
-                  "type": 5,
+                  "type": "common-uncompleted-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11363",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status != Closed AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 报表, 主页) AND (labels not in (移动端, iOS, IOS, Android) OR labels is EMPTY)"},
                  {"title": "移动端未完成",
-                  "type": 6,
+                  "type": "mobile-uncompleted-online-bug",
                   "link": "https://jira.qiaofangyun.com/issues/?filter=11364",
                   "jql": "project = SAAS2 AND issuetype = 线上问题 AND status != Closed AND (labels in (移动端, iOS, IOS, Android) or component in (移动端))"}
                  ]
 
-userQuestionCount = [{
-    "title": "线上问题统计",
-    "data": onlineBugInfo
-}, {"title": "客户需求统计", "data": userIssueInfo}]
+userQuestionCount = [
+    {"title": "客户需求统计", "data": userIssueInfo},
+    {"title": "线上问题统计", "data": onlineBugInfo}
+    ]
 
 waitFixBugInfo = [
     {"title": "房客楼",
-     "type": 3,
+     "type": "house-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11366",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android, 延迟修复)) AND createdDate < startOfDay(-8h) AND component in (房源, 客源, 楼盘字典, 带看)"},
 
     {"title": "交易组",
-     "type": 4,
+     "type": "transaction-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11367",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android, 延迟修复)) AND createdDate < startOfDay(-8h) AND component in (交易)"},
 
     {"title": "公共组",
-     "type": 5,
+     "type": "common-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11368",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android, 延迟修复)) AND createdDate < startOfDay(-8h) AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 报表, 主页)"},
 
     {"title": "移动端",
-     "type": 6,
+     "type": "mobile-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11311",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels in (移动端, IOS, iOS, Android) OR component in (移动端)) AND createdDate < startOfDay(-8h) AND labels not in (延迟修复)"}]
 waitVerifyBugInfo = [
     {"title": "房客楼",
-     "type": 3,
+     "type": "house-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11369",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(-7h) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (房源, 客源, 楼盘字典, 带看)"},
 
     {"title": "交易组",
-     "type": 4,
+     "type": "transaction-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11370",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(-7h) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (交易)"},
 
     {"title": "公共组",
-     "type": 5,
+     "type": "common-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11371",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(-7h) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 主页, 报表)"},
 
     {"title": "移动端",
-     "type": 6,
+     "type": "mobile-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11372",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(-7h) AND (labels in (移动端, iOS, IOS, Android) OR component in (移动端))"}]
 dayBugCount = [{

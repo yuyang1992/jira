@@ -24,11 +24,20 @@ class JiraDP(object):
     def login(self, userName, userPW):
         options = {'server': host}
         print("开始登录...")
-        self.jira = JIRA(options, basic_auth=(userName, userPW))
+        # self.jira = JIRA(options, basic_auth=(userName, userPW))
+        self.jira = JIRA(options, basic_auth=("li.zhang", "Qiaofang123"))
+        self.dingdingCount()
         print("登录成功...")
+        # self.searchCustomerNeed()
 
-    def searchUserStory(self, jira, jql):
-        issues = jira.search_issues(jql, maxResults=10000)
+        # self.searchCustomerNeed()
+        # df = self.sprintSummary(
+        #     'project = SAAS2 AND issuetype in (任务, 用户故事) AND Sprint = 232 AND assignee in (nan.xia, zhen.xu, huainan.qu, jingyan.wan, haitao.cao, li.zhang) ORDER BY Rank')
+        # self.createExcel(df)
+
+    def searchUserStory(self, jql):
+        issues = self.jira.search_issues(jql, maxResults=10000)
+        data = []
         for issue in issues.iterable:
             createTime = utc_to_local(issue.fields.created[0:19])
             statusName = issue.fields.status.name
@@ -39,30 +48,43 @@ class JiraDP(object):
                 issue.fields.resolutiondate[
                 0:19]) if issue.fields.resolutiondate is not None else None
             issue.fields.diff = round(
-                (parse(updateTime if status == 6 else nowTime) - parse(
+                (parse(updateTime if status == "6" else nowTime) - parse(
                     createTime)).total_seconds() / 3600 / 24, 1)
             issue.fields.createTime = createTime
             issue.fields.statusName = statusName
             issue.fields.status = status
             issue.fields.resolutionTime = resolutionTime
             issue.fields.updateTime = updateTime
-        data = map(lambda issue: {
-            "问题关键字": issue.key,
-            "概要": issue.fields.summary,
-            "标签": issue.fields.labels,
-            "预估时间": issue.fields.aggregatetimeoriginalestimate / 3600 / 8 if issue.fields.aggregatetimeoriginalestimate is not None else 0,
-            "经办人": issue.fields.assignee.displayName,
-            "问题创建时间": issue.fields.createTime,
-            "问题解决时间": issue.fields.resolutionTime,
-            "问题更新时间": issue.fields.updateTime,
-            "状态": issue.fields.status,
-            "状态名称": issue.fields.statusName,
-            "平均完成时间": issue.fields.diff,
-            "子任务": issue.fields.subtasks,
-            "备注": ""
-        },
-                   issues.iterable)
+            # 客户提需求日期
+            customerNeedCreateDate = issue.fields.customfield_10700
+            # 客户需求上线日期
+            customerOnlineDate = issue.fields.customfield_10702
+            # 客户需求预计上线日期
+            customerOnlineDate = issue.fields.customfield_10701
+            # print(vars(issue.fields))
+            item = {
+                "类型": issue.fields.issuetype.name,
+                "问题关键字": issue.key,
+                "概要": issue.fields.summary,
+                "标签": issue.fields.labels,
+                "预估时间": issue.fields.aggregatetimeoriginalestimate / 3600 / 8 if issue.fields.aggregatetimeoriginalestimate is not None else 0,
+                "经办人": issue.fields.assignee.displayName if issue.fields.assignee is not None else None,
+                "问题创建时间": issue.fields.createTime,
+                "问题解决时间": issue.fields.resolutionTime,
+                "问题更新时间": issue.fields.updateTime,
+                "状态": issue.fields.status,
+                "状态名称": issue.fields.statusName,
+                "需求完成时间": issue.fields.diff,
+                "客户需求预计上线日期": issue.fields.customfield_10701,
+                "客户需求上线日期": issue.fields.customfield_10702,
+                "客户提需求日期": issue.fields.customfield_10700,
+                "子任务": issue.fields.subtasks,
+                "备注": ""
+            }
+            data.append(item)
+
         fieldsDF = pd.DataFrame(data)
+        self.createExcel(fieldsDF, "09.xlsx")
         return fieldsDF
 
     def exportSummrayExcel(self, sprintName):
@@ -85,17 +107,54 @@ class JiraDP(object):
         self.searchCustomerNeed()
         self.searchDayBug()
 
-    def completedIssueCount(self, jira, data, callBack, dingdingRobot=dingdingTest):
+    def diffCustomerTime(self, item):
+        nowTime = datetime.datetime.now().strftime(("%Y-%m-%d"))
+        status = item["状态"]
+        # 客户提需求日期
+        customerNeedCreateDate = utc_to_local(
+            item["客户提需求日期"][0:19], "%Y-%m-%d") if item["客户提需求日期"] else None
+        # 客户需求上线日期
+        customerOnlineDate = utc_to_local(
+            item["客户需求上线日期"][0:19], "%Y-%m-%d") if item["客户需求上线日期"] else None
+        # 客户需求预计上线日期
+        customerxpectOnlineDate = utc_to_local(
+            item["客户需求预计上线日期"][0:19], "%Y-%m-%d") if item["客户需求预计上线日期"] else None
+        updateTime = item["问题更新时间"]
+        endTime = customerOnlineDate if customerOnlineDate is not None else (
+            customerxpectOnlineDate if customerxpectOnlineDate is not None else updateTime)
+        return (parse(endTime if status == "6" else nowTime) - parse(
+            customerNeedCreateDate)).total_seconds() / 3600 / 24
+
+    def unCompletedStoryTime(self,item):
+        nowTime = datetime.datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+        status = item["状态"]
+        updateTime = item["问题更新时间"]
+        createTime = item["问题创建时间"]
+        return round(
+            (parse(updateTime if status == "6" else nowTime) - parse(
+                createTime)).total_seconds() / 3600 / 24, 1)
+
+    def completedIssueCount(self, data, callBack, dingdingRobot=dingdingTest):
         allOnLinedata = []
+        print(data)
         title = data["title"]
         for onLineBean in data["data"]:
-            df = self.searchUserStory(jira, onLineBean["jql"])
-            accumulatePD = pd.DataFrame(df.mean(numeric_only="平均完成时间"))
+            df = self.searchUserStory(onLineBean["jql"])
             onLineBean["totalCount"] = df.shape[0]
+            if onLineBean["type"].find("customer-story") > -1:
+                customerCompletedDate = df.apply(lambda item: self.diffCustomerTime(item), axis=1)
+                print(round(customerCompletedDate.sum()/customerCompletedDate.shape[0]))
+                onLineBean["meanTime"] = int(
+                    0 if customerCompletedDate.empty else round(customerCompletedDate.sum()/customerCompletedDate.shape[0]))
 
-            onLineBean["meanTime"] = int(
-                0 if accumulatePD.empty else accumulatePD.loc["平均完成时间", 0])
-            onLineBean["timeTitle"] = "平均完成时间" if onLineBean["type"] == 1 else "平均等待时间"
+            else:
+                customerUncompletedDate = df.apply(lambda item: self.unCompletedStoryTime(item), axis=1)
+                onLineBean["meanTime"] = int(
+                    0 if customerUncompletedDate.empty else round(customerUncompletedDate.sum()/customerUncompletedDate.shape[0]))
+
+            onLineBean["timeTitle"] = "平均完成时间" if (onLineBean["type"] == "completed-customer-story"
+                                                   or onLineBean[
+                                                       "type"] == "completed-online-bug") else "平均等待时间"
             allOnLinedata.append(callBack(onLineBean))
         dingMsg = {
             "msgtype": "markdown",
@@ -107,42 +166,18 @@ class JiraDP(object):
                 "isAtAll": False
             }
         }
-
+        print(dingMsg)
         self.dingdingMsg(dingdingRobot, dingMsg)
 
     def dingdingMsg(self, dingdingRobot, data):
         headers = {'Content-Type': 'application/json'}
-        dingdingPost = requests.post(dingdingRobot, data=json.dumps(data), headers=headers)
+        dingdingPost = requests.post(dingdingTest, data=json.dumps(data), headers=headers)
         print(dingdingPost.text)
-
-    def completedIssueCount(self, jira, data, callBack, dingdingRobot=dingdingTest):
-        allOnLinedata = []
-        title = data["title"]
-        for onLineBean in data["data"]:
-            df = self.searchUserStory(jira, onLineBean["jql"])
-            accumulatePD = pd.DataFrame(df.mean(numeric_only="平均完成时间"))
-            onLineBean["totalCount"] = df.shape[0]
-
-            onLineBean["meanTime"] = int(
-                0 if accumulatePD.empty else accumulatePD.loc["平均完成时间", 0])
-            onLineBean["timeTitle"] = "平均完成时间" if onLineBean["type"] == 1 else "平均等待时间"
-            allOnLinedata.append(callBack(onLineBean))
-        dingMsg = {
-            "msgtype": "markdown",
-            "markdown": {
-                "title": "{title}\n\n".format(title=title),
-                "text": "## {title}\n\n".format(title=title) + "\n\n".join(allOnLinedata)
-            },
-            "at": {
-                "isAtAll": False
-            }
-        }
-
-        self.dingdingMsg(dingdingRobot, dingMsg)
+        pass
 
     def searchCustomerNeed(self):
         for data in userQuestionCount:
-            self.completedIssueCount(self.jira, data,
+            self.completedIssueCount(data,
                                      lambda
                                          onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
                                          title=onLineBean["title"],
@@ -154,7 +189,7 @@ class JiraDP(object):
 
     def searchDayBug(self):
         for data in dayBugCount:
-            self.completedIssueCount(self.jira, data,
+            self.completedIssueCount(data,
                                      lambda
                                          onLineBean: '### {title}:  {totalCount} 个；[点击查看]({link})'.format(
                                          title=onLineBean["title"],
@@ -183,8 +218,8 @@ class JiraDP(object):
     def diffTime(self, endTime, startTime):
         return round((parse(endTime) - parse(startTime)).total_seconds() / 3600 / 24, 1)
 
-    def searchDayIssue(self, name, jira, jql):
-        fieldsDF = self.searchUserStory(jira, jql)
+    def searchDayIssue(self, name, jql):
+        fieldsDF = self.searchUserStory(jql)
         newDF = fieldsDF.assign(
             Bug修复时间=lambda df: self.countBugFixTime(df)).assign(
             Bug验证时间=lambda df: self.countBugVerifyTime(df))
@@ -202,18 +237,18 @@ class JiraDP(object):
         return pd.DataFrame(bugSeries.to_dict(), index=[name]).assign(未修复bug数量=unFixCount).assign(
             未验证bug数量=unVerifyCount).assign(Bug总数=fieldsDF.shape[0])
 
-    def computeSubTime(self,jira, subTasks):
+    def computeSubTime(self, subTasks):
         time = 0
         for task in subTasks:
-            issue = jira.issue(task.key)
+            issue = self.jira.issue(task.key)
             status = issue.fields.status.id
             if status == "6" or status == "5":
-                time = time + issue.fields.aggregatetimeoriginalestimate
+                time = time + issue.fields.aggregatetimeoriginalestimate if issue.fields.aggregatetimeoriginalestimate is not None else 0
 
         return time
 
-    def storyCount(self, name, jira, jql):
-        df = self.searchUserStory(jira, jql)
+    def storyCount(self, name, jql):
+        df = self.searchUserStory(jql)
         storyCount = df.shape
         completedCount = df["状态"].map(lambda item: 1 if item == "6" else 0).sum()
         storyRollBack = df["标签"].map(lambda item: 1 if "需求移交打回" in item else 0).sum()
@@ -223,7 +258,7 @@ class JiraDP(object):
         uiRollBack = df["标签"].map(lambda item: 1 if "视觉走查打回" in item else 0).sum()
         testSelf = df["标签"].map(lambda item: 1 if "狗食" in item else 0).sum()
         acutalCompletedTime = df["子任务"].map(
-            lambda item: self.computeSubTime(jira, item)).sum() / 3600 / 8
+            lambda item: self.computeSubTime(item)).sum() / 3600 / 8
         planTime = df["预估时间"].sum()
         data = [{"总计划完成个数": storyCount[0],
                  "总计划实际完成个数": completedCount,
@@ -237,3 +272,13 @@ class JiraDP(object):
                  "狗食": testSelf}]
 
         return pd.DataFrame(data, index=[name])
+
+    def sprintSummary(self, jql):
+        df = self.searchUserStory(jql)
+        progress = df.apply(lambda item: str(
+            round(self.computeSubTime(item["子任务"]) / 3600 / 8 / item["预估时间"] * 100)) + "%", axis=1)
+        newDF = df.filter(
+            items=['类型', '问题关键字', '概要', "预估时间"]).assign(完成百分比=lambda item: progress,
+                                                        ).assign(未完成原因="")
+
+        self.createExcel(newDF, name="sprint迭代总结.xlsx")
