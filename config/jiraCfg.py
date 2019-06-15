@@ -178,6 +178,26 @@ waitCloseBugInfo = [
      "link": "https://jira.qiaofangyun.com/issues/?filter=11376",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened, 已解决) AND (labels in (移动端, IOS, iOS, Android) OR component in (移动端))"}]
 
+delayFixBugInfo = [
+    {"title": "房客楼",
+     "type": "house-delay-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11384",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND labels in (延迟修复) AND component in (房源, 客源, 楼盘字典, 带看)"},
+
+    {"title": "交易组",
+     "type": "transaction-delay-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11386",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND labels in (延迟修复) AND component in (交易, 新房)"},
+
+    {"title": "公共组",
+     "type": "common-delay-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11385",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND labels in (延迟修复) AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 报表, 主页)"},
+    {"title": "移动端",
+     "type": "mobile-delay-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11313",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND (labels in (移动端, IOS, iOS, Android) OR component in (移动端)) AND labels in (延迟修复)"}]
+
 dayBugCount = [{
     "title": "昨日待修复bug统计",
     "data": waitFixBugInfo
@@ -187,4 +207,7 @@ dayBugCount = [{
 }, {
     "title": "未关闭Bug总数统计",
     "data": waitCloseBugInfo
+}, {
+    "title": "延迟修复Bug总数统计",
+    "data": delayFixBugInfo
 }]

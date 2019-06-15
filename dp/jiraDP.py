@@ -17,6 +17,7 @@ class JiraDP(object):
     instance = None
     jira = None
     sprintPlanExcelName = "迭代计划.xlsx"
+    sprintPlanSummaryName = "迭代总结.xlsx"
 
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
@@ -28,9 +29,6 @@ class JiraDP(object):
         print("开始登录...")
         self.jira = JIRA(options, basic_auth=("li.zhang", "Qiaofang123"))
         print("登录成功...")
-        # self.exportSummrayExcel("sprint总结.xlsx")
-        # jql = ""
-        # self.spirntPlan()
 
     def searchUserStory(self, jql):
         issues = self.jira.search_issues(jql, maxResults=100000)
@@ -84,11 +82,7 @@ class JiraDP(object):
         self.createExcel(fieldsDF, "09.xlsx")
         return fieldsDF
 
-    def exportSummrayExcel(self, sprintName):
-
-        reopendJql = "project = SAAS2 AND issuetype in (Bug, 故障) AND (assignee in membersOf(移动端) OR labels in (移动端, iOS, IOS, Android)) AND status in (open, Reopened, 'In Progress')"
-        storyJql = "project = SAAS2 AND issuetype in (任务, 用户故事) AND Sprint = 232 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, nan.xia, jingyan.wan)"
-        bugJql = "project = SAAS2 AND issuetype in (Bug, 故障) AND (assignee in membersOf(移动端) OR labels in (移动端, iOS, IOS, Android)) AND status in (open, Reopened, 'In Progress') "
+    def exportSummrayExcel(self, storyJql, bugJql, reopendJql):
         bugData = self.searchDayIssue(bugJql)
         reopendBug = self.searchUserStory(reopendJql).shape[0]
         storyCountDF = self.storyCount(storyJql)
@@ -126,7 +120,7 @@ class JiraDP(object):
                                                "视觉走查打回",
                                                "狗食",
                                                "三稿不一致"])
-        self.createExcel(sprintDF, sprintName)
+        self.createExcel(sprintDF, self.sprintPlanSummaryName)
 
     def mergeDF(self, bugDF, storyDF):
         self.createExcel(bugDF.merge(storyDF, right_index=True, left_index=True), "迭代总结统计.xlsx",
@@ -290,12 +284,12 @@ class JiraDP(object):
 
         return time
 
-    def spirntPlan(self, jql):
+    def spirntPlan(self, storyJql, subTaskJql):
         writer = pd.ExcelWriter(self.sprintPlanExcelName)
-        df = self.searchUserStory(jql)
+        df = self.searchUserStory(storyJql)
         spirntDF = df.filter(items=["类型", "问题关键字", "概要", "经办人", "备注"],
                              axis=1)
-        self.searchSubTask(writer)
+        self.searchSubTask(subTaskJql, writer)
         self.sprintAvailableTime(writer)
         self.mergeExcel(spirntDF, writer, "迭代需求")
         writer.save()
@@ -336,10 +330,10 @@ class JiraDP(object):
             items=['类型', '问题关键字', '概要', "预估时间"]).assign(完成百分比=lambda item: progress,
                                                         ).assign(未完成原因="")
 
-        self.createExcel(newDF, name="sprint迭代总结.xlsx")
+        self.createExcel(newDF, name="迭代需求完成度.xlsx")
 
-    def searchSubTask(self, writer):
-        jql = "project = SAAS2 AND issuetype = 子任务 AND Sprint = 249 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, jingyan.wan, yuanxiang.xu)"
+    def searchSubTask(self, jql, writer):
+        # jql = "project = SAAS2 AND issuetype = 子任务 AND Sprint = 249 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, jingyan.wan, yuanxiang.xu)"
 
         issues = self.jira.search_issues(jql, maxResults=10000)
         fields = map(lambda issue: issue.fields, issues.iterable)
@@ -369,7 +363,6 @@ class JiraDP(object):
         meanDF = subTaskDF.mean(numeric_only=["饱和度"], axis=1)
 
         subTaskDF.loc["6"] = sumDF.merge(meanDF)
-        print(subTaskDF)
         self.mergeExcel(subTaskDF, writer, "工作饱和度")
 
     def sprintAvailableTime(self, writer):

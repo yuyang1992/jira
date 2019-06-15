@@ -1,9 +1,9 @@
 from PyQt5.Qt import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGridLayout, QLineEdit, \
-    QPushButton
+from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGridLayout, QLineEdit,
+                             QPushButton)
 
 from dp.jiraDP import JiraDP
-from config.jiraCfg import host, userQuestionCount, onlineDingDing, dayBugDingDing, dayBugCount, dingdingTest, memberWorkTimes
+from config.jiraCfg import  dingdingTest
 
 class DingDingTestView(QWidget):
     navigation = ''
