@@ -27,12 +27,6 @@ class CustomerCountView(QWidget):
         parentGroup.addWidget(userNameLable, 0, 0)
         parentGroup.addWidget(userNameEdit, 0, 1)
 
-        subTaskLable = QLabel("子任务JQL查询语句")
-        subTaskEdit = QLineEdit()
-        subTaskEdit.textChanged.connect(self.changeSubTaskJql)
-
-        parentGroup.addWidget(subTaskLable, 1, 0)
-        parentGroup.addWidget(subTaskEdit, 1, 1)
         loginBtn = QPushButton('导出', self)
         loginBtn.clicked.connect(lambda: self.show())
         parentGroup.addWidget(loginBtn, 2, 0, 1, 2, Qt.AlignTop | Qt.AlignCenter)
@@ -40,10 +34,7 @@ class CustomerCountView(QWidget):
         self.setLayout(contentGroup)
 
     def show(self):
-        JiraDP().spirntPlan(storyJql=self.jql, subTaskJql=self.subTaskJql)
+        JiraDP().sprintBugCountInUser(jql=self.jql)
 
     def changeJql(self, text):
         self.jql = text
-
-    def changeSubTaskJql(self, text):
-        self.subTaskJql = text

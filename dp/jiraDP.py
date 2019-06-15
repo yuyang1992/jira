@@ -400,9 +400,17 @@ class JiraDP(object):
         groups = df.groupby("经办人")
         bugCount = []
         for name, group in groups:
-            print(groups)
+            bugTotal = group.shape[0]
+            fixedBugCount = group["状态"].map(
+                lambda item: 1 if item == "6" or item == "5" else 0).sum()
+            unFixedBugCount = group["状态"].map(
+                lambda item: 1 if item != "6" and item != "5" else 0).sum()
+            fixBugTime = self.countBugFixTime(group).mean().round(1)
+            waitBugTime = self.countBugVerifyTime(group).mean().round(1)
             bugCount.append(
-                {"经办人": name, "bug总数": 222, "bug平均修复时间": 12, "bug平均等待时间": 12, "修复bug数量": 12,
-                 "未修复bug数量": 12})
-        bugCountDF = pd.DataFrame(bugCount)
-        print(bugCountDF)
+                {"经办人": name, "bug总数": bugTotal, "修复bug数量": fixedBugCount, "bug平均修复时间(h)": fixBugTime,
+                 "未修复bug数量": unFixedBugCount, "bug平均等待时间(h)": waitBugTime, })
+        bugCountDF = pd.DataFrame(bugCount,
+                                  columns=["经办人", "bug总数", "修复bug数量", "bug平均修复时间(h)", "未修复bug数量",
+                                           "bug平均等待时间(h)"])
+        self.createExcel(bugCountDF,"bug统计.xlsx")
