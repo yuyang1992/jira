@@ -28,9 +28,9 @@ class JiraDP(object):
         print("开始登录...")
         # self.jira = JIRA(options, basic_auth=(userName, userPW))
         self.jira = JIRA(options, basic_auth=("li.zhang", "Qiaofang123"))
-        # self.dingdingCount()
+        self.dingdingCount()
         print("登录成功...")
-        self.exportSummrayExcel("sprint总结.xlsx")
+        # self.exportSummrayExcel("sprint总结.xlsx")
         # jql = ""
         # self.spirntPlan()
         # df = self.sprintSummary('project = SAAS2 AND issuetype in (任务, 用户故事) AND (assignee in membersOf(人事公共组) OR reporter in membersOf(人事公共组) OR component in (公共, 首页, 审批流, 组织结构, 考勤)) AND (labels not in (移动端, IOS, Android, iOS) OR labels is EMPTY) AND Sprint = 232 ORDER BY Rank')
@@ -180,7 +180,8 @@ class JiraDP(object):
             onLineBean["totalCount"] = df.shape[0]
             if onLineBean["type"].find("customer-story") > -1:
                 customerCompletedDate = df.apply(lambda item: self.diffCustomerTime(item), axis=1)
-                print(round(customerCompletedDate.sum() / customerCompletedDate.shape[0]))
+                onLineBean["unPlanCount"] = df["客户需求预计上线日期"].map(
+                    lambda item: 1 if item is not None else 0).sum()
                 onLineBean["meanTime"] = int(
                     0 if customerCompletedDate.empty else round(
                         customerCompletedDate.sum() / customerCompletedDate.shape[0]))
@@ -211,20 +212,32 @@ class JiraDP(object):
 
     def dingdingMsg(self, dingdingRobot, data):
         headers = {'Content-Type': 'application/json'}
-        dingdingPost = requests.post(dingdingRobot, data=json.dumps(data), headers=headers)
+        dingdingPost = requests.post(dingdingTest, data=json.dumps(data), headers=headers)
         print(dingdingPost.text)
 
     def searchCustomerNeed(self):
         for data in userQuestionCount:
-            self.completedIssueCount(data,
-                                     lambda
-                                         onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
-                                         title=onLineBean["title"],
-                                         totalCount=onLineBean["totalCount"],
-                                         time=onLineBean["meanTime"],
-                                         timeTitle=onLineBean["timeTitle"],
-                                         link=onLineBean["link"]
-                                     ), onlineDingDing)
+            if data["type"] == "userStory":
+                self.completedIssueCount(data,
+                                         lambda
+                                             onLineBean: '### {title}:  {totalCount} 个；未排期:{unPlanCount}；{timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                             title=onLineBean["title"],
+                                             totalCount=onLineBean["totalCount"],
+                                             unPlanCount=onLineBean["unPlanCount"],
+                                             time=onLineBean["meanTime"],
+                                             timeTitle=onLineBean["timeTitle"],
+                                             link=onLineBean["link"]
+                                         ), onlineDingDing)
+            else:
+                self.completedIssueCount(data,
+                                         lambda
+                                             onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                             title=onLineBean["title"],
+                                             totalCount=onLineBean["totalCount"],
+                                             time=onLineBean["meanTime"],
+                                             timeTitle=onLineBean["timeTitle"],
+                                             link=onLineBean["link"]
+                                         ), onlineDingDing)
 
     def searchDayBug(self):
         for data in dayBugCount:
@@ -373,3 +386,21 @@ class JiraDP(object):
         totalSeries = newDF.filter(items=["职能", "可用工时"]).groupby("职能").sum().round(0)
         totalSeries.loc["总计"] = totalSeries.sum(numeric_only="可用工时")
         self.mergeExcel(totalSeries, writer, "工时分配")
+
+    # def sprintBugCountInUser(self,jql):
+    #     df = self.searchUserStory(jql)
+    #     groups=df.groupby("经办人")
+    #     bugCount = []
+    #     for name, group in groups:
+    #
+    #         time = pd.DataFrame(group.sum(axis=0, numeric_only="任务估时")).get_value(col=0,
+    #                                                                               index="任务估时") / 3600
+    #         workTime = 0
+    #         for timeInfo in memberWorkTimes:
+    #             if (name == timeInfo["name"]):
+    #                 workTime = timeInfo["percent"] * timeInfo["day"] * timeInfo["duration"]
+    #         percent = math.ceil(time / workTime * 100) if workTime != 0 else 0
+    #         bugCount.append({"经办人": name, "任务估时": time, "可用工时": workTime, "饱和度": percent})
+    #     subTaskDF = pd.DataFrame(subTaskTime, columns=["经办人", "任务估时", "可用工时", "饱和度"])
+    #     sumDF = subTaskDF.sum(numeric_only=["任务估时", "可用工时"], axis=1)
+    #     meanDF = subTaskDF.mean(numeric_only=["饱和度"], axis=1)

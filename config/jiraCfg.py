@@ -112,8 +112,8 @@ onlineBugInfo = [{"title": "已完成总数",
                  ]
 
 userQuestionCount = [
-    {"title": "客户需求统计", "data": userIssueInfo},
-    {"title": "线上问题统计", "data": onlineBugInfo}
+    {"title": "客户需求统计", "type": "userStory", "data": userIssueInfo},
+    {"title": "线上问题统计", "type": "onlineBug", "data": onlineBugInfo}
 ]
 
 waitFixBugInfo = [
@@ -156,10 +156,35 @@ waitVerifyBugInfo = [
      "type": "mobile-wait-fix-bug",
      "link": "https://jira.qiaofangyun.com/issues/?filter=11372",
      "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(-7h) AND (labels in (移动端, iOS, IOS, Android) OR component in (移动端))"}]
+
+waitCloseBugInfo = [
+    {"title": "房客楼",
+     "type": "house-wait-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11373",
+     "jql": "project in ('SaaS 2.0') AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened, 已解决) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (房源, 客源, 楼盘字典, 带看)"},
+
+    {"title": "交易组",
+     "type": "transaction-wait-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11374",
+     "jql": "project in ('SaaS 2.0') AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened, 已解决) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (交易, 新房)"},
+
+    {"title": "公共组",
+     "type": "common-wait-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11375",
+     "jql": "project in ('SaaS 2.0') AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened, 已解决) AND (labels is EMPTY OR labels not in (移动端, IOS, iOS, Android)) AND component in (公共, 首页, 审批流, 消息和待办, 组织结构, 考勤, 报表, 主页)"},
+
+    {"title": "移动端",
+     "type": "mobile-wait-close-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11376",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened, 已解决) AND (labels in (移动端, IOS, iOS, Android) OR component in (移动端))"}]
+
 dayBugCount = [{
     "title": "昨日待修复bug统计",
     "data": waitFixBugInfo
 }, {
     "title": "昨日待验证bug统计",
     "data": waitVerifyBugInfo
+}, {
+    "title": "未关闭Bug总数统计",
+    "data": waitCloseBugInfo
 }]
