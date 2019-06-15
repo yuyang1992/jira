@@ -7,7 +7,7 @@ import requests
 from dateutil.parser import parse
 from jira import JIRA
 
-from config.jiraCfg import host, userQuestionCount, onlineDingDing, dayBugDingDing, dayBugCount, \
+from config.jiraCfg import host, userQuestionCount, dayBugCount, \
     dingdingTest, memberWorkTimes
 from utlis.dateUtlis import utc_to_local
 
@@ -26,14 +26,11 @@ class JiraDP(object):
     def login(self, userName, userPW):
         options = {'server': host}
         print("开始登录...")
-        # self.jira = JIRA(options, basic_auth=(userName, userPW))
         self.jira = JIRA(options, basic_auth=("li.zhang", "Qiaofang123"))
-        self.dingdingCount()
         print("登录成功...")
         # self.exportSummrayExcel("sprint总结.xlsx")
         # jql = ""
         # self.spirntPlan()
-        # df = self.sprintSummary('project = SAAS2 AND issuetype in (任务, 用户故事) AND (assignee in membersOf(人事公共组) OR reporter in membersOf(人事公共组) OR component in (公共, 首页, 审批流, 组织结构, 考勤)) AND (labels not in (移动端, IOS, Android, iOS) OR labels is EMPTY) AND Sprint = 232 ORDER BY Rank')
 
     def searchUserStory(self, jql):
         issues = self.jira.search_issues(jql, maxResults=100000)
@@ -141,9 +138,9 @@ class JiraDP(object):
     def mergeExcel(self, df, writer, sheet_name="sheet1"):
         df.to_excel(writer, sheet_name=sheet_name)
 
-    def dingdingCount(self):
-        self.searchCustomerNeed()
-        self.searchDayBug()
+    def dingdingCount(self, dingdingRobot):
+        self.searchCustomerNeed(dingdingRobot)
+        self.searchDayBug(dingdingRobot)
 
     def diffCustomerTime(self, item):
         nowTime = datetime.datetime.now().strftime(("%Y-%m-%d"))
@@ -212,10 +209,10 @@ class JiraDP(object):
 
     def dingdingMsg(self, dingdingRobot, data):
         headers = {'Content-Type': 'application/json'}
-        dingdingPost = requests.post(dingdingTest, data=json.dumps(data), headers=headers)
+        dingdingPost = requests.post(dingdingRobot, data=json.dumps(data), headers=headers)
         print(dingdingPost.text)
 
-    def searchCustomerNeed(self):
+    def searchCustomerNeed(self, dingdingRobot):
         for data in userQuestionCount:
             if data["type"] == "userStory":
                 self.completedIssueCount(data,
@@ -227,7 +224,7 @@ class JiraDP(object):
                                              time=onLineBean["meanTime"],
                                              timeTitle=onLineBean["timeTitle"],
                                              link=onLineBean["link"]
-                                         ), onlineDingDing)
+                                         ), dingdingRobot)
             else:
                 self.completedIssueCount(data,
                                          lambda
@@ -237,9 +234,9 @@ class JiraDP(object):
                                              time=onLineBean["meanTime"],
                                              timeTitle=onLineBean["timeTitle"],
                                              link=onLineBean["link"]
-                                         ), onlineDingDing)
+                                         ), dingdingRobot)
 
-    def searchDayBug(self):
+    def searchDayBug(self, dingdingRobot):
         for data in dayBugCount:
             self.completedIssueCount(data,
                                      lambda
@@ -247,7 +244,7 @@ class JiraDP(object):
                                          title=onLineBean["title"],
                                          totalCount=onLineBean["totalCount"],
                                          link=onLineBean["link"]
-                                     ), dayBugDingDing)
+                                     ), dingdingRobot)
 
     def countBugFixTime(self, dataFrame):
         data = []
