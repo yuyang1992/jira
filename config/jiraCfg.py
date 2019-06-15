@@ -200,14 +200,18 @@ delayFixBugInfo = [
 
 dayBugCount = [{
     "title": "昨日待修复bug统计",
+    "type": "wait-fix-bug",
     "data": waitFixBugInfo
 }, {
     "title": "昨日待验证bug统计",
+    "type": "wait-verify-bug",
     "data": waitVerifyBugInfo
 }, {
     "title": "未关闭Bug总数统计",
+    "type": "wait-close-bug",
     "data": waitCloseBugInfo
 }, {
     "title": "延迟修复Bug总数统计",
+    "type": "delay-fix-bug",
     "data": delayFixBugInfo
 }]

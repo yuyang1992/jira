@@ -79,7 +79,6 @@ class JiraDP(object):
             data.append(item)
 
         fieldsDF = pd.DataFrame(data)
-        self.createExcel(fieldsDF, "09.xlsx")
         return fieldsDF
 
     def exportSummrayExcel(self, storyJql, bugJql, reopendJql):
@@ -211,7 +210,14 @@ class JiraDP(object):
             if data["type"] == "userStory":
                 self.completedIssueCount(data,
                                          lambda
-                                             onLineBean: '### {title}:  {totalCount} 个；未排期:{unPlanCount}；{timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                             onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                             title=onLineBean["title"],
+                                             totalCount=onLineBean["totalCount"],
+                                             time=onLineBean["meanTime"],
+                                             timeTitle=onLineBean["timeTitle"],
+                                             link=onLineBean["link"]
+                                         ) if onLineBean[
+                                                  "type"] == "completed-customer-story" else '### {title}:  {totalCount} 个；未排期:{unPlanCount}；{timeTitle}:{time}天 ；[点击查看]({link})'.format(
                                              title=onLineBean["title"],
                                              totalCount=onLineBean["totalCount"],
                                              unPlanCount=onLineBean["unPlanCount"],
@@ -232,13 +238,25 @@ class JiraDP(object):
 
     def searchDayBug(self, dingdingRobot):
         for data in dayBugCount:
-            self.completedIssueCount(data,
-                                     lambda
-                                         onLineBean: '### {title}:  {totalCount} 个；[点击查看]({link})'.format(
-                                         title=onLineBean["title"],
-                                         totalCount=onLineBean["totalCount"],
-                                         link=onLineBean["link"]
-                                     ), dingdingRobot)
+            if data["type"] == "delay-fix-bug":
+                self.completedIssueCount(data,
+                                         lambda
+                                             onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                             title=onLineBean["title"],
+                                             totalCount=onLineBean["totalCount"],
+                                             time=onLineBean["meanTime"],
+                                             timeTitle=onLineBean["timeTitle"],
+                                             link=onLineBean["link"]
+                                         ), dingdingRobot)
+
+            else:
+                self.completedIssueCount(data,
+                                         lambda
+                                             onLineBean: '### {title}:  {totalCount} 个；[点击查看]({link})'.format(
+                                             title=onLineBean["title"],
+                                             totalCount=onLineBean["totalCount"],
+                                             link=onLineBean["link"]
+                                         ), dingdingRobot)
 
     def countBugFixTime(self, dataFrame):
         data = []
@@ -377,20 +395,14 @@ class JiraDP(object):
         totalSeries.loc["总计"] = totalSeries.sum(numeric_only="可用工时")
         self.mergeExcel(totalSeries, writer, "工时分配")
 
-    # def sprintBugCountInUser(self,jql):
-    #     df = self.searchUserStory(jql)
-    #     groups=df.groupby("经办人")
-    #     bugCount = []
-    #     for name, group in groups:
-    #
-    #         time = pd.DataFrame(group.sum(axis=0, numeric_only="任务估时")).get_value(col=0,
-    #                                                                               index="任务估时") / 3600
-    #         workTime = 0
-    #         for timeInfo in memberWorkTimes:
-    #             if (name == timeInfo["name"]):
-    #                 workTime = timeInfo["percent"] * timeInfo["day"] * timeInfo["duration"]
-    #         percent = math.ceil(time / workTime * 100) if workTime != 0 else 0
-    #         bugCount.append({"经办人": name, "任务估时": time, "可用工时": workTime, "饱和度": percent})
-    #     subTaskDF = pd.DataFrame(subTaskTime, columns=["经办人", "任务估时", "可用工时", "饱和度"])
-    #     sumDF = subTaskDF.sum(numeric_only=["任务估时", "可用工时"], axis=1)
-    #     meanDF = subTaskDF.mean(numeric_only=["饱和度"], axis=1)
+    def sprintBugCountInUser(self, jql):
+        df = self.searchUserStory(jql)
+        groups = df.groupby("经办人")
+        bugCount = []
+        for name, group in groups:
+            print(groups)
+            bugCount.append(
+                {"经办人": name, "bug总数": 222, "bug平均修复时间": 12, "bug平均等待时间": 12, "修复bug数量": 12,
+                 "未修复bug数量": 12})
+        bugCountDF = pd.DataFrame(bugCount)
+        print(bugCountDF)

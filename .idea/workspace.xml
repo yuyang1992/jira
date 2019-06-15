@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="44f78d27-e776-4819-8707-21eb47cfab5c" name="Default" comment="完成迭代统计">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/09.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/09.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/jiraCfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/jiraCfg.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dp/jiraDP.py" beforeDir="false" afterPath="$PROJECT_DIR$/dp/jiraDP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprint总结.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprint迭代总结.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/DingDingTestView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/DingDingTestView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/PlanView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/PlanView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/SummaryView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/SummaryView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/迭代计划.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/CustomerCountView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/CustomerCountView.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +21,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4" selection-start-line="4" selection-end-line="4" />
+            <state relative-caret-position="152">
+              <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -36,8 +33,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/JiraKit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
+            <state relative-caret-position="95">
+              <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -45,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dp/jiraDP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="323" column="8" selection-start-line="323" selection-start-column="8" selection-end-line="323" selection-end-column="8" />
+            <state relative-caret-position="598">
+              <caret line="408" column="25" lean-forward="true" selection-start-line="408" selection-start-column="25" selection-end-line="408" selection-end-column="25" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -69,8 +66,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/PlanView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="39" column="18" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
+            <state relative-caret-position="141">
+              <caret line="9" selection-start-line="9" selection-end-line="49" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -117,8 +114,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/CustomerCountView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="722">
+              <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -129,8 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="55" column="51" selection-start-line="55" selection-start-column="27" selection-end-line="55" selection-end-column="51" />
+            <state relative-caret-position="390">
+              <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -174,16 +171,16 @@
       <find>xlsx</find>
       <find>storyCountDF</find>
       <find>交易</find>
-      <find>经办人</find>
       <find>spirnt</find>
+      <find>经办人</find>
     </findStrings>
     <replaceStrings>
       <replace>issues</replace>
       <replace>jira</replace>
       <replace>online-bug</replace>
       <replace>stroy</replace>
-      <replace>需求完成时间</replace>
       <replace>reopen</replace>
+      <replace>需求完成时间</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -208,7 +205,6 @@
         <option value="$PROJECT_DIR$/views/Login.py" />
         <option value="$PROJECT_DIR$/services/JiraServices.py" />
         <option value="$PROJECT_DIR$/views/IterationSummaryView.py" />
-        <option value="$PROJECT_DIR$/views/CustomerCountView.py" />
         <option value="$PROJECT_DIR$/views/JiraKit.py" />
         <option value="$PROJECT_DIR$/utlis/dateUtlis.py" />
         <option value="$PROJECT_DIR$/views/MainView.py" />
@@ -216,10 +212,11 @@
         <option value="$PROJECT_DIR$/views/LoginView.py" />
         <option value="$PROJECT_DIR$/views/DingDingDayCountView.py" />
         <option value="$PROJECT_DIR$/views/DingDingTestView.py" />
-        <option value="$PROJECT_DIR$/config/jiraCfg.py" />
-        <option value="$PROJECT_DIR$/dp/jiraDP.py" />
-        <option value="$PROJECT_DIR$/views/PlanView.py" />
         <option value="$PROJECT_DIR$/views/SummaryView.py" />
+        <option value="$PROJECT_DIR$/views/PlanView.py" />
+        <option value="$PROJECT_DIR$/config/jiraCfg.py" />
+        <option value="$PROJECT_DIR$/views/CustomerCountView.py" />
+        <option value="$PROJECT_DIR$/dp/jiraDP.py" />
       </list>
     </option>
   </component>
@@ -483,19 +480,25 @@
       <option name="project" value="LOCAL" />
       <updated>1560566333355</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="完成迭代统计">
+      <created>1560578226571</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1560578226571</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="110" y="44" width="2442" height="1389" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1134106" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.19295436" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.857022" visible="true" weight="0.38831064" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.857022" visible="true" weight="0.35308248" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49977097" weight="0.39844358" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -798,13 +801,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/JiraKit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/DingDingDayCountView.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
@@ -825,44 +821,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/CustomerCountView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/LoginView.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="726">
           <caret line="43" selection-start-line="43" selection-end-line="49" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="55" column="51" selection-start-line="55" selection-start-column="27" selection-end-line="55" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/PlanView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="39" column="18" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
@@ -879,10 +841,54 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/JiraKit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/PlanView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="9" selection-start-line="9" selection-end-line="49" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/CustomerCountView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="722">
+          <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dp/jiraDP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="323" column="8" selection-start-line="323" selection-start-column="8" selection-end-line="323" selection-end-column="8" />
+        <state relative-caret-position="598">
+          <caret line="408" column="25" lean-forward="true" selection-start-line="408" selection-start-column="25" selection-end-line="408" selection-end-column="25" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
