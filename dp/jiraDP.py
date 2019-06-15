@@ -4,6 +4,9 @@ import math
 
 import pandas as pd
 import requests
+from PyQt5.QtCore import QThread
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from dateutil.parser import parse
 from jira import JIRA
 
@@ -408,9 +411,32 @@ class JiraDP(object):
             fixBugTime = self.countBugFixTime(group).mean().round(1)
             waitBugTime = self.countBugVerifyTime(group).mean().round(1)
             bugCount.append(
-                {"经办人": name, "bug总数": bugTotal, "修复bug数量": fixedBugCount, "bug平均修复时间(h)": fixBugTime,
+                {"经办人": name, "bug总数": bugTotal, "修复bug数量": fixedBugCount,
+                 "bug平均修复时间(h)": fixBugTime,
                  "未修复bug数量": unFixedBugCount, "bug平均等待时间(h)": waitBugTime, })
         bugCountDF = pd.DataFrame(bugCount,
                                   columns=["经办人", "bug总数", "修复bug数量", "bug平均修复时间(h)", "未修复bug数量",
                                            "bug平均等待时间(h)"])
-        self.createExcel(bugCountDF,"bug统计.xlsx")
+        self.createExcel(bugCountDF, "bug统计.xlsx")
+
+    def setSchedulerTask(self, hour, minute, job):
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(job, 'cron', hour=hour, minute=minute)
+        scheduler.start()
+        print("定时任务设置成功")
+
+
+# class SchedulerThread(QThread):
+#     hour = None
+#     minute = None
+#     job = None
+#
+#     def __init__(slef,parent=None):
+#         super().__init__(parent)
+#         self.hour = hour
+#         self.minute = minute
+#         self.job = job
+#
+#     def run(self):
+#         # JiraDP().setSchedulerTask(self.hour, self.minute, self.job)
+#         pass

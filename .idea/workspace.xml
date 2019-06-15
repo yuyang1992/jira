@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="44f78d27-e776-4819-8707-21eb47cfab5c" name="Default" comment="完成迭代统计">
-      <change beforePath="$PROJECT_DIR$/09.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/09.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/jiraCfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/jiraCfg.py" afterDir="false" />
+    <list default="true" id="44f78d27-e776-4819-8707-21eb47cfab5c" name="Default" comment="完成人均bug 统计">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dp/jiraDP.py" beforeDir="false" afterPath="$PROJECT_DIR$/dp/jiraDP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/CustomerCountView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/CustomerCountView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/DingDingDayCountView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/DingDingDayCountView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/DingDingTestView.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/DingDingTestView.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+            <state relative-caret-position="190">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -30,20 +30,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/JiraKit.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dp/jiraDP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="408" column="25" lean-forward="true" selection-start-line="408" selection-start-column="25" selection-end-line="408" selection-end-column="25" />
+            <state relative-caret-position="118">
+              <caret line="413" column="13" lean-forward="true" selection-start-line="413" selection-start-column="13" selection-end-line="413" selection-end-column="13" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -52,25 +43,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/LoginView.py">
+        <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/threading.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="726">
-              <caret line="43" selection-start-line="43" selection-end-line="49" selection-end-column="19" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/PlanView.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="9" selection-start-line="9" selection-end-line="49" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="15542">
+              <caret line="824" column="39" selection-start-line="824" selection-start-column="39" selection-end-line="824" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -78,10 +54,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/DingDingDayCountView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
+            <state relative-caret-position="630">
+              <caret line="42" selection-start-line="42" selection-end-line="42" />
               <folding>
-                <element signature="e#0#23#0" expanded="true" />
+                <element signature="e#0#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -90,23 +66,38 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/DingDingTestView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+            <state relative-caret-position="649">
+              <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
               <folding>
-                <element signature="e#0#23#0" expanded="true" />
+                <element signature="e#0#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/SummaryView.py">
+        <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/690644531/PyQt5/QtCore/QThread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="517">
-              <caret line="87" column="25" selection-start-line="87" selection-start-column="25" selection-end-line="87" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#27#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="2489">
+              <caret line="135" column="8" selection-start-line="135" selection-start-column="8" selection-end-line="135" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/asyncio/events.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4275">
+              <caret line="236" column="8" selection-start-line="236" selection-start-column="8" selection-end-line="236" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/asyncio/tasks.pyi">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1311">
+              <caret line="76" column="8" selection-start-line="76" selection-start-column="8" selection-end-line="76" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -114,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/CustomerCountView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="722">
-              <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+            <state relative-caret-position="589">
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -126,7 +117,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
+            <state relative-caret-position="3838">
               <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
             </state>
           </provider>
@@ -143,13 +134,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>print</find>
-      <find>%</find>
-      <find>ding</find>
-      <find>dingdingMsg</find>
-      <find>dingdingCount</find>
-      <find>userIssueInfo</find>
-      <find>人事OA-内容-公司公告修改</find>
       <find>customer-story</find>
       <find>平均完成时间</find>
       <find>2019/06/13</find>
@@ -171,16 +155,23 @@
       <find>xlsx</find>
       <find>storyCountDF</find>
       <find>交易</find>
-      <find>spirnt</find>
       <find>经办人</find>
+      <find>[0]</find>
+      <find>平均修复时间</find>
+      <find>countBugFixTime</find>
+      <find>bugList</find>
+      <find>bug数量</find>
+      <find>Bug平均修复时间</find>
+      <find>spirnt</find>
+      <find>assign</find>
     </findStrings>
     <replaceStrings>
       <replace>issues</replace>
       <replace>jira</replace>
       <replace>online-bug</replace>
       <replace>stroy</replace>
-      <replace>reopen</replace>
       <replace>需求完成时间</replace>
+      <replace>reopen</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -208,15 +199,15 @@
         <option value="$PROJECT_DIR$/views/JiraKit.py" />
         <option value="$PROJECT_DIR$/utlis/dateUtlis.py" />
         <option value="$PROJECT_DIR$/views/MainView.py" />
-        <option value="$PROJECT_DIR$/index.py" />
         <option value="$PROJECT_DIR$/views/LoginView.py" />
-        <option value="$PROJECT_DIR$/views/DingDingDayCountView.py" />
-        <option value="$PROJECT_DIR$/views/DingDingTestView.py" />
-        <option value="$PROJECT_DIR$/views/SummaryView.py" />
         <option value="$PROJECT_DIR$/views/PlanView.py" />
         <option value="$PROJECT_DIR$/config/jiraCfg.py" />
         <option value="$PROJECT_DIR$/views/CustomerCountView.py" />
+        <option value="$PROJECT_DIR$/views/SummaryView.py" />
+        <option value="$PROJECT_DIR$/views/DingDingDayCountView.py" />
+        <option value="$PROJECT_DIR$/index.py" />
         <option value="$PROJECT_DIR$/dp/jiraDP.py" />
+        <option value="$PROJECT_DIR$/views/DingDingTestView.py" />
       </list>
     </option>
   </component>
@@ -227,9 +218,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="110" />
-    <option name="y" value="44" />
-    <option name="width" value="2442" />
+    <option name="x" value="760" />
+    <option name="y" value="51" />
+    <option name="width" value="1544" />
     <option name="height" value="1389" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -240,6 +231,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -271,7 +263,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -487,25 +478,40 @@
       <option name="project" value="LOCAL" />
       <updated>1560578226571</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="完成bug 统计">
+      <created>1560581216059</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1560581216059</updated>
+    </task>
+    <task id="LOCAL-00012" summary="完成人均bug 统计">
+      <created>1560583490553</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1560583490553</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="110" y="44" width="2442" height="1389" extended-state="0" />
+    <frame x="760" y="51" width="1544" height="1389" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1134106" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18050066" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.19295436" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.857022" visible="true" weight="0.35308248" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.857022" visible="true" weight="0.3122498" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49977097" weight="0.39844358" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.83506805" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.5465313" weight="0.29703763" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.5465313" weight="0.09127302" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.142978" side_tool="true" weight="0.8199686" />
       <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -536,7 +542,9 @@
     <MESSAGE value="完成迭代统计UI" />
     <MESSAGE value="完成迭代统计计划初版" />
     <MESSAGE value="完成迭代统计" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成迭代统计" />
+    <MESSAGE value="完成bug 统计" />
+    <MESSAGE value="完成人均bug 统计" />
+    <option name="LAST_COMMIT_MESSAGE" value="完成人均bug 统计" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -550,34 +558,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/-1199943126/time.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4446">
-          <caret line="234" column="32" selection-start-line="234" selection-start-column="32" selection-end-line="234" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/datetime.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="31046">
-          <caret line="1636" column="8" selection-start-line="1636" selection-start-column="8" selection-end-line="1636" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/requests/sessions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8246">
-          <caret line="461" selection-start-line="461" selection-end-line="461" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/matplotlib/pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13775">
-          <caret line="774" column="4" selection-start-line="774" selection-start-column="4" selection-end-line="774" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/matplotlib/backends/backend_agg.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3401">
@@ -791,69 +771,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/MainView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="27" column="37" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#90#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/DingDingDayCountView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/DingDingTestView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/LoginView.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="726">
           <caret line="43" selection-start-line="43" selection-end-line="49" selection-end-column="19" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/SummaryView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="87" column="25" selection-start-line="87" selection-start-column="25" selection-end-line="87" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -867,7 +790,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/PlanView.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
+        <state relative-caret-position="95">
           <caret line="9" selection-start-line="9" selection-end-line="49" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -875,20 +798,105 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/MainView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+          <folding>
+            <element signature="e#0#90#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/SummaryView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="31" selection-start-line="31" selection-end-line="45" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15542">
+          <caret line="824" column="39" selection-start-line="824" selection-start-column="39" selection-end-line="824" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/690644531/PyQt5/QtCore/QThread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2489">
+          <caret line="135" column="8" selection-start-line="135" selection-start-column="8" selection-end-line="135" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/asyncio/events.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4275">
+          <caret line="236" column="8" selection-start-line="236" selection-start-column="8" selection-end-line="236" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/asyncio/tasks.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1311">
+          <caret line="76" column="8" selection-start-line="76" selection-start-column="8" selection-end-line="76" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/CustomerCountView.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="722">
-          <caret line="38" column="22" lean-forward="true" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+        <state relative-caret-position="589">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config/jiraCfg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3838">
+          <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/DingDingDayCountView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/DingDingTestView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="649">
+          <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dp/jiraDP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="408" column="25" lean-forward="true" selection-start-line="408" selection-start-column="25" selection-end-line="408" selection-end-column="25" />
+        <state relative-caret-position="118">
+          <caret line="413" column="13" lean-forward="true" selection-start-line="413" selection-start-column="13" selection-end-line="413" selection-end-column="13" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
