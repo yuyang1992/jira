@@ -7,34 +7,44 @@ groups = [{"name": "移动端", "members": []},
 
 memberWorkTimes = [{
     "name": "屈淮南",
-    "percent": 0.3,
+    "profession": "Android",
+    "duration": 7,
     "day": 9,
-    "duration": 7
+    "percent": 0.3,
 }, {
     "name": "张荔",
-    "percent": 1,
+    "profession": "Android",
+    "duration": 7,
     "day": 9,
-    "duration": 7
+    "percent": 1,
+
 }, {
     "name": "万经言",
-    "percent": 1,
+    "profession": "Android",
+    "duration": 7,
     "day": 7,
-    "duration": 7
+    "percent": 1,
+
 }, {
     "name": "徐臻",
-    "percent": 1,
+    "profession": "IOS",
+    "duration": 7,
     "day": 9,
-    "duration": 7
+    "percent": 1,
+
 }, {
     "name": "曹海涛",
-    "percent": 1,
+    "profession": "IOS",
+    "duration": 7,
     "day": 8,
-    "duration": 7
+    "percent": 1,
+
 }, {
     "name": "徐远翔",
-    "percent": 1,
+    "profession": "测试",
+    "duration": 7,
     "day": 9,
-    "duration": 7
+    "percent": 1,
 }]
 managerGroup = "https://oapi.dingtalk.com/robot/send?access_token=37c465ab11ebcfd3ba9c7a9bf8c858e8a8b7e8d72dced86e9a4dca3f0cc1b429"
 

@@ -10,3 +10,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     login = JiraKit()
     sys.exit(app.exec_())
+    # JiraDP().sprintAvailableTime()

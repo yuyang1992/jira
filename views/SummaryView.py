@@ -57,4 +57,4 @@ class SummaryView(QWidget):
         self.setLayout(contentGroup)
 
     def exportExcel(self):
-        print(JiraDP().exportSummrayExcel("spint08"))
+        print(JiraDP().exportSummrayExcel("sprint总结"))

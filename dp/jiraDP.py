@@ -16,6 +16,7 @@ class JiraDP(object):
     # 定义类属性记录单例对象引用
     instance = None
     jira = None
+    sprintPlanExcelName = "迭代计划.xlsx"
 
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
@@ -29,13 +30,10 @@ class JiraDP(object):
         self.jira = JIRA(options, basic_auth=("li.zhang", "Qiaofang123"))
         # self.dingdingCount()
         print("登录成功...")
-
-        self.spirntPlan("project = SAAS2 AND issuetype in (任务, 用户故事) AND Sprint = 249 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, nan.xia, jingyan.wan)")
-        # self.exportSummrayExcel("spint08")
+        self.exportSummrayExcel("sprint总结.xlsx")
         # jql = ""
         # self.spirntPlan()
         # df = self.sprintSummary('project = SAAS2 AND issuetype in (任务, 用户故事) AND (assignee in membersOf(人事公共组) OR reporter in membersOf(人事公共组) OR component in (公共, 首页, 审批流, 组织结构, 考勤)) AND (labels not in (移动端, IOS, Android, iOS) OR labels is EMPTY) AND Sprint = 232 ORDER BY Rank')
-
 
     def searchUserStory(self, jql):
         issues = self.jira.search_issues(jql, maxResults=100000)
@@ -91,8 +89,9 @@ class JiraDP(object):
 
     def exportSummrayExcel(self, sprintName):
 
-        reopendJql = "project = SAAS2 AND issuetype in (Bug, 故障) and status was Reopened and  createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)"
-        storyJql = "project = SAAS2 AND issuetype in (用户故事, 任务) and createdDate >= '2019/5/13' and createdDate <= '2019/5/24' and component in (房源, 客源, 带看, 楼盘字典) and (labels not in (移动端, IOS, iOS, Android) or labels is EMPTY)"
+        reopendJql = "project = SAAS2 AND issuetype in (Bug, 故障) AND (assignee in membersOf(移动端) OR labels in (移动端, iOS, IOS, Android)) AND status in (open, Reopened, 'In Progress')"
+        storyJql = "project = SAAS2 AND issuetype in (任务, 用户故事) AND Sprint = 232 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, nan.xia, jingyan.wan)"
+        bugJql = "project = SAAS2 AND issuetype in (Bug, 故障) AND (assignee in membersOf(移动端) OR labels in (移动端, iOS, IOS, Android)) AND status in (open, Reopened, 'In Progress') "
         bugData = self.searchDayIssue(bugJql)
         reopendBug = self.searchUserStory(reopendJql).shape[0]
         storyCountDF = self.storyCount(storyJql)
@@ -112,7 +111,8 @@ class JiraDP(object):
                  "产品验收打回": storyCountDF['产品验收打回'],
                  "视觉走查打回": storyCountDF['视觉走查'
                                         '打回'],
-                 "狗食": storyCountDF['狗食']}]
+                 "狗食": storyCountDF['狗食'],
+                 "三稿不一致": storyCountDF['三稿不一致']}]
         sprintDF = pd.DataFrame(data, columns=["Bug平均修复时间(h)",
                                                "Bug平均验证时间(h)",
                                                "未完成bug个数",
@@ -127,8 +127,9 @@ class JiraDP(object):
                                                "后端提测打回",
                                                "产品验收打回",
                                                "视觉走查打回",
-                                               "狗食"])
-        self.createExcel(sprintDF)
+                                               "狗食",
+                                               "三稿不一致"])
+        self.createExcel(sprintDF, sprintName)
 
     def mergeDF(self, bugDF, storyDF):
         self.createExcel(bugDF.merge(storyDF, right_index=True, left_index=True), "迭代总结统计.xlsx",
@@ -136,6 +137,9 @@ class JiraDP(object):
 
     def createExcel(self, df, name='sprint10.xlsx', sheet_name="sheet1"):
         df.to_excel(name, sheet_name=sheet_name)
+
+    def mergeExcel(self, df, writer, sheet_name="sheet1"):
+        df.to_excel(writer, sheet_name=sheet_name)
 
     def dingdingCount(self):
         self.searchCustomerNeed()
@@ -277,15 +281,14 @@ class JiraDP(object):
         return time
 
     def spirntPlan(self, jql):
+        writer = pd.ExcelWriter(self.sprintPlanExcelName)
         df = self.searchUserStory(jql)
         spirntDF = df.filter(items=["类型", "问题关键字", "概要", "经办人", "备注"],
                              axis=1)
-        sprintTimeDF = df.groupby(["经办人"])
-        print(sprintTimeDF)
-        self.searchSubTask()
-        self.createExcel(spirntDF, "sprint迭代任务.xlsx")
-
-
+        self.searchSubTask(writer)
+        self.sprintAvailableTime(writer)
+        self.mergeExcel(spirntDF, writer, "迭代需求")
+        writer.save()
 
     def storyCount(self, jql):
         df = self.searchUserStory(jql)
@@ -297,6 +300,7 @@ class JiraDP(object):
         productRollBack = df["标签"].map(lambda item: 1 if "产品验收打回" in item else 0).sum()
         uiRollBack = df["标签"].map(lambda item: 1 if "视觉走查打回" in item else 0).sum()
         testSelf = df["标签"].map(lambda item: 1 if "狗食" in item else 0).sum()
+        sketchSelf = df["标签"].map(lambda item: 1 if "三稿不一致" in item else 0).sum()
         acutalCompletedTime = df["子任务"].map(
             lambda item: self.computeSubTime(item)).sum() / 3600 / 8
         planTime = df["预估时间"].sum()
@@ -309,6 +313,7 @@ class JiraDP(object):
                 "后端提测打回": serverRollBack,
                 "产品验收打回": productRollBack,
                 "视觉走查打回": uiRollBack,
+                "三稿不一致": sketchSelf,
                 "狗食": testSelf}
 
         return data
@@ -323,8 +328,8 @@ class JiraDP(object):
 
         self.createExcel(newDF, name="sprint迭代总结.xlsx")
 
-    def searchSubTask(self, maxResults=None):
-        jql = "project = SAAS2 AND issuetype in (任务, 子任务) AND status = Open AND Sprint = 249 AND assignee in (huainan.qu,zhen.xu, currentUser(), haitao.cao, li.zhang, jingyan.wan, yuanxiang.xu)"
+    def searchSubTask(self, writer):
+        jql = "project = SAAS2 AND issuetype = 子任务 AND Sprint = 249 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, jingyan.wan, yuanxiang.xu)"
 
         issues = self.jira.search_issues(jql, maxResults=10000)
         fields = map(lambda issue: issue.fields, issues.iterable)
@@ -347,8 +352,24 @@ class JiraDP(object):
             for timeInfo in memberWorkTimes:
                 if (name == timeInfo["name"]):
                     workTime = timeInfo["percent"] * timeInfo["day"] * timeInfo["duration"]
-            percent = math.ceil(time / workTime * 100).__str__() + "%" if workTime !=0 else "0%"
+            percent = math.ceil(time / workTime * 100) if workTime != 0 else 0
             subTaskTime.append({"经办人": name, "任务估时": time, "可用工时": workTime, "饱和度": percent})
         subTaskDF = pd.DataFrame(subTaskTime, columns=["经办人", "任务估时", "可用工时", "饱和度"])
+        sumDF = subTaskDF.sum(numeric_only=["任务估时", "可用工时"], axis=1)
+        meanDF = subTaskDF.mean(numeric_only=["饱和度"], axis=1)
+
+        subTaskDF.loc["6"] = sumDF.merge(meanDF)
         print(subTaskDF)
-        subTaskDF.to_excel('工时分配.xlsx', sheet_name='Sheet1')
+        self.mergeExcel(subTaskDF, writer, "工作饱和度")
+
+    def sprintAvailableTime(self, writer):
+        df = pd.DataFrame(memberWorkTimes,
+                          columns=["name", "profession", "day", "duration", "percent"])
+        df.assign()
+        df.columns = ["姓名", "职能", "可用天数", "每天可用工时", "迭代占比"]
+        totalWorkTime = df.apply(lambda item: item["可用天数"] * item["每天可用工时"] * item["迭代占比"], axis=1)
+        newDF = df.assign(可用工时=totalWorkTime).assign(备注=pd.Series(["", "", "", "", "", ""]))
+        newDF.filter(items=["职能", "可用工时"]).mean()
+        totalSeries = newDF.filter(items=["职能", "可用工时"]).groupby("职能").sum().round(0)
+        totalSeries.loc["总计"] = totalSeries.sum(numeric_only="可用工时")
+        self.mergeExcel(totalSeries, writer, "工时分配")
