@@ -1,11 +1,11 @@
 from PyQt5.QtCore import QDateTime
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QDateTimeEdit
+from PyQt5.QtWidgets import (QWidget, QLabel, QVBoxLayout, QGridLayout, QPushButton, QDateTimeEdit)
 
-from config.jiraCfg import onlineDingDing, dayBugDingDing
+from config.jiraCfg import dingdingTest
 from dp.jiraDP import JiraDP
 
 
-class DingDingDayCountView(QWidget):
+class MobileDingDingView(QWidget):
     navigation = ''
 
     def __init__(self, navigation):
@@ -30,16 +30,14 @@ class DingDingDayCountView(QWidget):
         loginBtn = QPushButton('立即发送', self)
         timingBtn = QPushButton('定时发送', self)
         loginBtn.clicked.connect(lambda: self.show())
-        timingBtn.clicked.connect(lambda: self.show())
+        timingBtn.clicked.connect(lambda: self.onTiming())
         parentGroup.addWidget(loginBtn, 1, 0)
         parentGroup.addWidget(timingBtn, 1, 1)
         contentGroup.addLayout(parentGroup)
         self.setLayout(contentGroup)
 
     def show(self):
-        JiraDP().searchCustomerNeed(onlineDingDing)
-        JiraDP().searchDayBug(dayBugDingDing)
-        pass
+        JiraDP().daySchedulerTask()
 
     def onTiming(self):
-        JiraDP().setSchedulerTask(hour=15, minute=57, job=self.show())
+        JiraDP().setSchedulerTask(16, 30, self.show)

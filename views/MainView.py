@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QSta
 from views.CustomerCountView import CustomerCountView
 from views.DingDingDayCountView import DingDingDayCountView
 from views.DingDingTestView import DingDingTestView
+from views.MobileDingDingView import MobileDingDingView
 from views.PlanView import PlanView
 from views.SummaryView import SummaryView
 
@@ -21,7 +22,7 @@ class MainView(QWidget):
         rightGroup = QHBoxLayout()
         leftList = QListWidget()
 
-        leftList.addItems(["迭代总结统计", "迭代计划统计", "人均Bug统计", "钉钉每日统计", "钉钉测试"])
+        leftList.addItems(["迭代总结统计", "迭代计划统计", "人均Bug统计", "钉钉每日统计", "钉钉测试", "移动端钉钉任务"])
         leftGroup.addWidget(leftList)
         qStackedLayout = QStackedLayout()
         qStackedLayout.addWidget(SummaryView(qStackedLayout))
@@ -29,6 +30,7 @@ class MainView(QWidget):
         qStackedLayout.addWidget(CustomerCountView(qStackedLayout))
         qStackedLayout.addWidget(DingDingDayCountView(qStackedLayout))
         qStackedLayout.addWidget(DingDingTestView(qStackedLayout))
+        qStackedLayout.addWidget(MobileDingDingView(qStackedLayout))
 
         rightGroup.addLayout(qStackedLayout)
         parentGroup.addLayout(leftGroup, 1)

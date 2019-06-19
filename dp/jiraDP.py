@@ -4,9 +4,7 @@ import math
 
 import pandas as pd
 import requests
-from PyQt5.QtCore import QThread
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
 from dateutil.parser import parse
 from jira import JIRA
 
@@ -174,7 +172,7 @@ class JiraDP(object):
             if onLineBean["type"].find("customer-story") > -1:
                 customerCompletedDate = df.apply(lambda item: self.diffCustomerTime(item), axis=1)
                 onLineBean["unPlanCount"] = df["客户需求预计上线日期"].map(
-                    lambda item: 1 if item is not None else 0).sum()
+                    lambda item: 1 if item is  None else 0).sum()
                 onLineBean["meanTime"] = int(
                     0 if customerCompletedDate.empty else round(
                         customerCompletedDate.sum() / customerCompletedDate.shape[0]))
@@ -413,10 +411,10 @@ class JiraDP(object):
             bugCount.append(
                 {"经办人": name, "bug总数": bugTotal, "修复bug数量": fixedBugCount,
                  "bug平均修复时间(h)": fixBugTime,
-                 "未修复bug数量": unFixedBugCount, "bug平均等待时间(h)": waitBugTime, })
+                 "未修复bug数量": unFixedBugCount, "bug平均验证时间(h)": waitBugTime, })
         bugCountDF = pd.DataFrame(bugCount,
                                   columns=["经办人", "bug总数", "修复bug数量", "bug平均修复时间(h)", "未修复bug数量",
-                                           "bug平均等待时间(h)"])
+                                           "bug平均验证时间(h)"])
         self.createExcel(bugCountDF, "bug统计.xlsx")
 
     def setSchedulerTask(self, hour, minute, job):
@@ -425,18 +423,31 @@ class JiraDP(object):
         scheduler.start()
         print("定时任务设置成功")
 
+    def daySchedulerTask(self):
+        waitFixBugJql = 'project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, "In Progress", Reopened) AND labels in (移动端, IOS, iOS, Android) AND createdDate < startOfDay(16h) AND labels not in (延迟修复)'
+        fieldsDF = self.searchUserStory(waitFixBugJql)
+        groups = fieldsDF.groupby("经办人")
+        bugCount = []
+        for name, group in groups:
+            bugTotal = group.shape[0]
+            content = '### {name}:  {totalCount} 个；[点击查看]({link})'.format(name=name,
+                                                                          totalCount=bugTotal,
+                                                                          link="https://jira.qiaofangyun.com/secure/Dashboard.jspa?selectPageId=10207")
+            bugCount.append(content)
 
-# class SchedulerThread(QThread):
-#     hour = None
-#     minute = None
-#     job = None
-#
-#     def __init__(slef,parent=None):
-#         super().__init__(parent)
-#         self.hour = hour
-#         self.minute = minute
-#         self.job = job
-#
-#     def run(self):
-#         # JiraDP().setSchedulerTask(self.hour, self.minute, self.job)
-#         pass
+        dingMsg = {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": "{title}\n\n".format(title="移动端今日待修复Bug统计"),
+                "text": "## {title}\n\n".format(title="移动端今日待修复Bug统计") + "\n\n".join(bugCount)
+            },
+            "at": {
+                "isAtAll": False
+            }
+        }
+        print(dingMsg)
+        self.dingdingMsg(
+            "https://oapi.dingtalk.com/robot/send?access_token=d826402b34bb0b42db763df60360909b3fba65975ba88b81a725c401a9f5400b",
+            dingMsg)
+
+
