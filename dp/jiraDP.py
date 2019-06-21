@@ -51,13 +51,15 @@ class JiraDP(object):
             issue.fields.status = status
             issue.fields.resolutionTime = resolutionTime
             issue.fields.updateTime = updateTime
-            # 客户提需求日期
-            customerNeedCreateDate = issue.fields.customfield_10700
-            # 客户需求上线日期
-            customerOnlineDate = issue.fields.customfield_10702
-            # 客户需求预计上线日期
-            customerOnlineDate = issue.fields.customfield_10701
-            # print(vars(issue.fields))
+            # # 客户提需求日期
+            # customerNeedCreateDate = issue.fields.customfield_10700
+            # # 客户需求上线日期
+            # customerOnlineDate = issue.fields.customfield_10702
+            # # 客户需求预计上线日期
+            # customerOnlineDate = issue.fields.customfield_10701
+            if (issue.fields.aggregatetimeoriginalestimate == 0):
+                print("id", issue.key)
+
             item = {
                 "类型": issue.fields.issuetype.name,
                 "问题关键字": issue.key,
@@ -71,9 +73,12 @@ class JiraDP(object):
                 "状态": issue.fields.status,
                 "状态名称": issue.fields.statusName,
                 "需求完成时间": issue.fields.diff,
-                "客户需求预计上线日期": issue.fields.customfield_10701,
-                "客户需求上线日期": issue.fields.customfield_10702,
-                "客户提需求日期": issue.fields.customfield_10700,
+                "客户需求预计上线日期": issue.fields.customfield_10701 if hasattr(issue.fields,
+                                                                        "customfield_10701") else None,
+                "客户需求上线日期": issue.fields.customfield_10702 if hasattr(issue.fields,
+                                                                      "customfield_10702") else None,
+                "客户提需求日期": issue.fields.customfield_10700 if hasattr(issue.fields,
+                                                                     "customfield_10700") else None,
                 "子任务": issue.fields.subtasks,
                 "备注": ""
             }
@@ -172,7 +177,7 @@ class JiraDP(object):
             if onLineBean["type"].find("customer-story") > -1:
                 customerCompletedDate = df.apply(lambda item: self.diffCustomerTime(item), axis=1)
                 onLineBean["unPlanCount"] = df["客户需求预计上线日期"].map(
-                    lambda item: 1 if item is  None else 0).sum()
+                    lambda item: 1 if item is None else 0).sum()
                 onLineBean["meanTime"] = int(
                     0 if customerCompletedDate.empty else round(
                         customerCompletedDate.sum() / customerCompletedDate.shape[0]))
@@ -381,7 +386,7 @@ class JiraDP(object):
         sumDF = subTaskDF.sum(numeric_only=["任务估时", "可用工时"], axis=1)
         meanDF = subTaskDF.mean(numeric_only=["饱和度"], axis=1)
 
-        subTaskDF.loc["6"] = sumDF.merge(meanDF)
+        # subTaskDF.loc["6"] = sumDF.merge(meanDF)
         self.mergeExcel(subTaskDF, writer, "工作饱和度")
 
     def sprintAvailableTime(self, writer):
@@ -449,5 +454,3 @@ class JiraDP(object):
         self.dingdingMsg(
             "https://oapi.dingtalk.com/robot/send?access_token=d826402b34bb0b42db763df60360909b3fba65975ba88b81a725c401a9f5400b",
             dingMsg)
-
-
