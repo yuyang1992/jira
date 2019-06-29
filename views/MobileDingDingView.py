@@ -40,4 +40,4 @@ class MobileDingDingView(QWidget):
         JiraDP().daySchedulerTask()
 
     def onTiming(self):
-        JiraDP().setSchedulerTask(16, 30, self.show)
+        JiraDP().setSchedulerTask(17, 00, self.show)

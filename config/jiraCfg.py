@@ -19,10 +19,17 @@ memberWorkTimes = [{
     "percent": 1,
 
 }, {
+    "name": "吴昊",
+    "profession": "IOS",
+    "duration": 7,
+    "day": 9,
+    "percent": 1,
+
+}, {
     "name": "万经言",
     "profession": "Android",
     "duration": 7,
-    "day": 7,
+    "day": 9,
     "percent": 1,
 
 }, {
@@ -36,11 +43,17 @@ memberWorkTimes = [{
     "name": "曹海涛",
     "profession": "IOS",
     "duration": 7,
-    "day": 8,
+    "day": 9,
     "percent": 1,
 
 }, {
     "name": "徐远翔",
+    "profession": "测试",
+    "duration": 7,
+    "day": 9,
+    "percent": 1,
+}, {
+    "name": "虞阳",
     "profession": "测试",
     "duration": 7,
     "day": 9,
@@ -215,3 +228,34 @@ dayBugCount = [{
     "type": "delay-fix-bug",
     "data": delayFixBugInfo
 }]
+
+mobileDayBugCount = [{
+    "title": "待修复bug统计",
+    "type": "wait-fix-bug",
+    "data": waitFixBugInfo
+}, {
+    "title": "待验证bug统计",
+    "type": "wait-verify-bug",
+    "data": waitVerifyBugInfo
+}]
+
+mobileDingDingTask = [
+    {"title": "移动端待修复Bug",
+     "type": "mobile-wait-fix-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11470",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, 'In Progress', Reopened) AND labels in (移动端, IOS, iOS, Android) AND createdDate < startOfDay(16h) AND labels not in (延迟修复)"},
+    {"title": "移动端待验证Bug",
+     "type": "mobile-wait-verify-bug",
+     "link": "https://jira.qiaofangyun.com/issues/?filter=11471",
+     "jql": "project = SAAS2 AND issuetype in (Bug, 故障) AND status in (已解决) AND resolved < startOfDay(17h) AND labels in (移动端, IOS, iOS, Android)"
+     }
+]
+
+groupDingDingTask = [
+    {
+        "title": "移动端钉钉提醒",
+        "type": "mobile",
+        "dingDing": 'https://oapi.dingtalk.com/robot/send?access_token=d826402b34bb0b42db763df60360909b3fba65975ba88b81a725c401a9f5400b',
+        "data": mobileDingDingTask
+    }
+]

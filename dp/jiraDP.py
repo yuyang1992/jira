@@ -9,7 +9,7 @@ from dateutil.parser import parse
 from jira import JIRA
 
 from config.jiraCfg import host, userQuestionCount, dayBugCount, \
-    dingdingTest, memberWorkTimes
+    dingdingTest, memberWorkTimes, groupDingDingTask
 from utlis.dateUtlis import utc_to_local
 
 
@@ -57,7 +57,8 @@ class JiraDP(object):
             # customerOnlineDate = issue.fields.customfield_10702
             # # 客户需求预计上线日期
             # customerOnlineDate = issue.fields.customfield_10701
-            if (issue.fields.aggregatetimeoriginalestimate == 0):
+            if (
+                    issue.fields.aggregatetimeoriginalestimate == 0 or issue.fields.aggregatetimeoriginalestimate is None):
                 print("id", issue.key)
 
             item = {
@@ -107,7 +108,7 @@ class JiraDP(object):
                  "产品验收打回": storyCountDF['产品验收打回'],
                  "视觉走查打回": storyCountDF['视觉走查'
                                         '打回'],
-                 "狗食": storyCountDF['狗食'],
+                 "狗粮": storyCountDF['狗粮'],
                  "三稿不一致": storyCountDF['三稿不一致']}]
         sprintDF = pd.DataFrame(data, columns=["Bug平均修复时间(h)",
                                                "Bug平均验证时间(h)",
@@ -123,7 +124,7 @@ class JiraDP(object):
                                                "后端提测打回",
                                                "产品验收打回",
                                                "视觉走查打回",
-                                               "狗食",
+                                               "狗粮",
                                                "三稿不一致"])
         self.createExcel(sprintDF, self.sprintPlanSummaryName)
 
@@ -268,6 +269,9 @@ class JiraDP(object):
         data = []
         statusArray = dataFrame["状态"]
         for index in statusArray.index:
+            if (statusArray[index] == "5" or statusArray[index] == "6"):
+                print(dataFrame["问题解决时间"][index], dataFrame["问题创建时间"][index],
+                      dataFrame["问题关键字"][index])
             time = self.diffTime(dataFrame["问题解决时间"][index], dataFrame["问题创建时间"][index]) if (
                     statusArray[index] == "5" or statusArray[index] == "6") else 0
             data.append(time * 24)
@@ -327,7 +331,7 @@ class JiraDP(object):
         serverRollBack = df["标签"].map(lambda item: 1 if "后端提测打回" in item else 0).sum()
         productRollBack = df["标签"].map(lambda item: 1 if "产品验收打回" in item else 0).sum()
         uiRollBack = df["标签"].map(lambda item: 1 if "视觉走查打回" in item else 0).sum()
-        testSelf = df["标签"].map(lambda item: 1 if "狗食" in item else 0).sum()
+        testSelf = df["标签"].map(lambda item: 1 if "狗粮" in item else 0).sum()
         sketchSelf = df["标签"].map(lambda item: 1 if "三稿不一致" in item else 0).sum()
         acutalCompletedTime = df["子任务"].map(
             lambda item: self.computeSubTime(item)).sum() / 3600 / 8
@@ -342,7 +346,7 @@ class JiraDP(object):
                 "产品验收打回": productRollBack,
                 "视觉走查打回": uiRollBack,
                 "三稿不一致": sketchSelf,
-                "狗食": testSelf}
+                "狗粮": testSelf}
 
         return data
 
@@ -429,28 +433,13 @@ class JiraDP(object):
         print("定时任务设置成功")
 
     def daySchedulerTask(self):
-        waitFixBugJql = 'project = SAAS2 AND issuetype in (Bug, 故障) AND status in (Open, "In Progress", Reopened) AND labels in (移动端, IOS, iOS, Android) AND createdDate < startOfDay(16h) AND labels not in (延迟修复)'
-        fieldsDF = self.searchUserStory(waitFixBugJql)
-        groups = fieldsDF.groupby("经办人")
-        bugCount = []
-        for name, group in groups:
-            bugTotal = group.shape[0]
-            content = '### {name}:  {totalCount} 个；[点击查看]({link})'.format(name=name,
-                                                                          totalCount=bugTotal,
-                                                                          link="https://jira.qiaofangyun.com/secure/Dashboard.jspa?selectPageId=10207")
-            bugCount.append(content)
-
-        dingMsg = {
-            "msgtype": "markdown",
-            "markdown": {
-                "title": "{title}\n\n".format(title="移动端今日待修复Bug统计"),
-                "text": "## {title}\n\n".format(title="移动端今日待修复Bug统计") + "\n\n".join(bugCount)
-            },
-            "at": {
-                "isAtAll": False
-            }
-        }
-        print(dingMsg)
-        self.dingdingMsg(
-            "https://oapi.dingtalk.com/robot/send?access_token=d826402b34bb0b42db763df60360909b3fba65975ba88b81a725c401a9f5400b",
-            dingMsg)
+        for data in groupDingDingTask:
+            self.completedIssueCount(data,
+                                     lambda
+                                         onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
+                                         title=onLineBean["title"],
+                                         totalCount=onLineBean["totalCount"],
+                                         time=onLineBean["meanTime"],
+                                         timeTitle=onLineBean["timeTitle"],
+                                         link=onLineBean["link"]
+                                     ), data["dingDing"])
