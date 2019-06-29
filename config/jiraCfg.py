@@ -11,12 +11,14 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 0.3,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 }, {
     "name": "张荔",
     "profession": "Android",
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 
 }, {
     "name": "吴昊",
@@ -24,6 +26,7 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 
 }, {
     "name": "万经言",
@@ -31,6 +34,7 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 
 }, {
     "name": "徐臻",
@@ -38,6 +42,7 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 
 }, {
     "name": "曹海涛",
@@ -45,6 +50,7 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 
 }, {
     "name": "徐远翔",
@@ -52,12 +58,14 @@ memberWorkTimes = [{
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 }, {
     "name": "虞阳",
     "profession": "测试",
     "duration": 7,
     "day": 9,
     "percent": 1,
+    "bugFilter": "https://jira.qiaofangyun.com/issues/?filter=11176"
 }]
 managerGroup = "https://oapi.dingtalk.com/robot/send?access_token=37c465ab11ebcfd3ba9c7a9bf8c858e8a8b7e8d72dced86e9a4dca3f0cc1b429"
 
@@ -253,7 +261,7 @@ mobileDingDingTask = [
 
 groupDingDingTask = [
     {
-        "title": "移动端钉钉提醒",
+        "title": "移动端当天应修复与应验证bug提醒",
         "type": "mobile",
         "dingDing": 'https://oapi.dingtalk.com/robot/send?access_token=d826402b34bb0b42db763df60360909b3fba65975ba88b81a725c401a9f5400b',
         "data": mobileDingDingTask

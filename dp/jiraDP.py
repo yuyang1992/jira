@@ -59,7 +59,7 @@ class JiraDP(object):
             # customerOnlineDate = issue.fields.customfield_10701
             if (
                     issue.fields.aggregatetimeoriginalestimate == 0 or issue.fields.aggregatetimeoriginalestimate is None):
-                print("id", issue.key)
+                print("id", vars(issue.fields))
 
             item = {
                 "类型": issue.fields.issuetype.name,
@@ -68,6 +68,7 @@ class JiraDP(object):
                 "标签": issue.fields.labels,
                 "预估时间": issue.fields.aggregatetimeoriginalestimate / 3600 / 8 if issue.fields.aggregatetimeoriginalestimate is not None else 0,
                 "经办人": issue.fields.assignee.displayName if issue.fields.assignee is not None else None,
+                "报告人": issue.fields.reporter.displayName,
                 "问题创建时间": issue.fields.createTime,
                 "问题解决时间": issue.fields.resolutionTime,
                 "问题更新时间": issue.fields.updateTime,
@@ -207,6 +208,95 @@ class JiraDP(object):
         print(dingMsg)
         self.dingdingMsg(dingdingRobot, dingMsg)
 
+    # 统计未修复的bug,待验证的bug,,视觉走查可以验证的bug
+    def countUndoneBug(self, data, callBack, dingdingRobot=dingdingTest):
+        allOnLinedata = []
+        title = data["title"]
+        bugBeanInfos = []
+        for onLineBean in data["data"]:
+            for bugBean in self.jiraBug(onLineBean["jql"]):
+                isMobile = False
+                if bugBean["未修复bug数量"] > 0:
+                    for memberBean in memberWorkTimes:
+                        if memberBean["name"] == bugBean["经办人"]:
+                            bugBean["link"] = memberBean["bugFilter"]
+                            bugBean["name"] = bugBean["经办人"]
+                            bugBean["count"] = bugBean["未修复bug数量"]
+                            bugBean["time"] = bugBean["bug平均等待修复时间(h)"]
+                            isMobile = True
+                            break
+                    if not isMobile:
+                        bugBean["link"] = "https://jira.qiaofangyun.com/issues/?filter=11470"
+                    allOnLinedata.append(callBack(bugBean))
+            for bugBean in self.jiraBug(onLineBean["jql"], "报告人"):
+                if bugBean["待验证的bug"] > 0:
+                    isMobile = False
+                    bugBean["name"] = bugBean["报告人"]
+                    bugBean["count"] = bugBean["待验证的bug"]
+                    bugBean["time"] = bugBean["平均等待验证时间(h)"]
+                    for memberBean in memberWorkTimes:
+                        if memberBean["name"] == bugBean["报告人"]:
+                            bugBean["link"] = memberBean["bugFilter"]
+                            isMobile = True
+                            break
+                    if not isMobile:
+                        bugBean["link"] = "https://jira.qiaofangyun.com/issues/?filter=11471"
+                    allOnLinedata.append(callBack(bugBean))
+
+        # allOnLinedata
+        print(allOnLinedata)
+
+        dingMsg = {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": "{title}\n\n".format(title=title),
+                "text": "## {title}\n\n".format(title=title) + "\n\n".join(allOnLinedata)
+            },
+            "at": {
+                "isAtAll": False
+            }
+        }
+        self.dingdingMsg(dingdingRobot, dingMsg)
+
+    # 视觉可以走查的用户故事  ,待产品验收的用户故事
+    def countUndoneStory(self, data, callBack, dingdingRobot=dingdingTest):
+        allOnLinedata = []
+        title = data["title"]
+        for onLineBean in data["data"]:
+            df = self.searchUserStory(onLineBean["jql"])
+            onLineBean["totalCount"] = df.shape[0]
+            if onLineBean["type"].find("customer-story") > -1:
+                customerCompletedDate = df.apply(lambda item: self.diffCustomerTime(item), axis=1)
+                onLineBean["unPlanCount"] = df["客户需求预计上线日期"].map(
+                    lambda item: 1 if item is None else 0).sum()
+                onLineBean["meanTime"] = int(
+                    0 if customerCompletedDate.empty else round(
+                        customerCompletedDate.sum() / customerCompletedDate.shape[0]))
+
+            else:
+                customerUncompletedDate = df.apply(lambda item: self.unCompletedStoryTime(item),
+                                                   axis=1)
+                onLineBean["meanTime"] = int(
+                    0 if customerUncompletedDate.empty else round(
+                        customerUncompletedDate.sum() / customerUncompletedDate.shape[0]))
+
+            onLineBean["timeTitle"] = "平均完成时间" if (onLineBean["type"] == "completed-customer-story"
+                                                   or onLineBean[
+                                                       "type"] == "completed-online-bug") else "平均等待时间"
+            allOnLinedata.append(callBack(onLineBean))
+        dingMsg = {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": "{title}\n\n".format(title=title),
+                "text": "## {title}\n\n".format(title=title) + "\n\n".join(allOnLinedata)
+            },
+            "at": {
+                "isAtAll": False
+            }
+        }
+        print(dingMsg)
+        self.dingdingMsg(dingdingRobot, dingMsg)
+
     def dingdingMsg(self, dingdingRobot, data):
         headers = {'Content-Type': 'application/json'}
         dingdingPost = requests.post(dingdingRobot, data=json.dumps(data), headers=headers)
@@ -269,11 +359,28 @@ class JiraDP(object):
         data = []
         statusArray = dataFrame["状态"]
         for index in statusArray.index:
-            if (statusArray[index] == "5" or statusArray[index] == "6"):
-                print(dataFrame["问题解决时间"][index], dataFrame["问题创建时间"][index],
-                      dataFrame["问题关键字"][index])
             time = self.diffTime(dataFrame["问题解决时间"][index], dataFrame["问题创建时间"][index]) if (
                     statusArray[index] == "5" or statusArray[index] == "6") else 0
+            data.append(time * 24)
+        return pd.Series(data)
+
+    def countBugWaitTime(self, dataFrame):
+        data = []
+        statusArray = dataFrame["状态"]
+        nowTime = datetime.datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+        for index in statusArray.index:
+            time = self.diffTime(nowTime, dataFrame["问题创建时间"][index]) if (
+                    statusArray[index] == "1" or statusArray[index] == "2") else 0
+            data.append(time * 24)
+        return pd.Series(data)
+
+    def countBugWaitVertifyTime(self, dataFrame):
+        data = []
+        statusArray = dataFrame["状态"]
+        nowTime = datetime.datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+        for index in statusArray.index:
+            time = self.diffTime(nowTime, dataFrame["问题创建时间"][index]) if (
+                    statusArray[index] == "5") else 0
             data.append(time * 24)
         return pd.Series(data)
 
@@ -301,6 +408,7 @@ class JiraDP(object):
         return {"Bug平均修复时间": bugList[0], "Bug平均验证时间": bugList[1],
                 "未完成bug个数": unFixCount + unVerifyCount, "Bug总数": fieldsDF.shape[0]}
 
+    # 计算子任务时间
     def computeSubTime(self, subTasks):
         time = 0
         for task in subTasks:
@@ -312,6 +420,7 @@ class JiraDP(object):
 
         return time
 
+    # 迭代计划
     def spirntPlan(self, storyJql, subTaskJql):
         writer = pd.ExcelWriter(self.sprintPlanExcelName)
         df = self.searchUserStory(storyJql)
@@ -361,7 +470,6 @@ class JiraDP(object):
         self.createExcel(newDF, name="迭代需求完成度.xlsx")
 
     def searchSubTask(self, jql, writer):
-        # jql = "project = SAAS2 AND issuetype = 子任务 AND Sprint = 249 AND assignee in (zhen.xu, huainan.qu, haitao.cao, li.zhang, jingyan.wan, yuanxiang.xu)"
 
         issues = self.jira.search_issues(jql, maxResults=10000)
         fields = map(lambda issue: issue.fields, issues.iterable)
@@ -405,9 +513,11 @@ class JiraDP(object):
         totalSeries.loc["总计"] = totalSeries.sum(numeric_only="可用工时")
         self.mergeExcel(totalSeries, writer, "工时分配")
 
-    def sprintBugCountInUser(self, jql):
+    def jiraBug(self, jql, key="经办人"):
         df = self.searchUserStory(jql)
-        groups = df.groupby("经办人")
+        if df.empty:
+            return []
+        groups = df.groupby(key)
         bugCount = []
         for name, group in groups:
             bugTotal = group.shape[0]
@@ -415,16 +525,27 @@ class JiraDP(object):
                 lambda item: 1 if item == "6" or item == "5" else 0).sum()
             unFixedBugCount = group["状态"].map(
                 lambda item: 1 if item != "6" and item != "5" else 0).sum()
+            waitVerifyBug = group["状态"].map(
+                lambda item: 1 if item == "5" else 0).sum()
             fixBugTime = self.countBugFixTime(group).mean().round(1)
-            waitBugTime = self.countBugVerifyTime(group).mean().round(1)
+            verifyBugTime = self.countBugVerifyTime(group).mean().round(1)
+            waitBugTime = self.countBugWaitTime(group).mean().round(1)
+            waitVerifyTime = self.countBugWaitVertifyTime(group).mean().round(1)
             bugCount.append(
-                {"经办人": name, "bug总数": bugTotal, "修复bug数量": fixedBugCount,
-                 "bug平均修复时间(h)": fixBugTime,
-                 "未修复bug数量": unFixedBugCount, "bug平均验证时间(h)": waitBugTime, })
-        bugCountDF = pd.DataFrame(bugCount,
-                                  columns=["经办人", "bug总数", "修复bug数量", "bug平均修复时间(h)", "未修复bug数量",
-                                           "bug平均验证时间(h)"])
-        self.createExcel(bugCountDF, "bug统计.xlsx")
+                {key: name, "bug总数": bugTotal, "修复bug数量": fixedBugCount,
+
+                 "bug平均修复时间(h)": fixBugTime, "bug平均验证时间(h)": verifyBugTime,
+                 "未修复bug数量": unFixedBugCount, "bug平均等待修复时间(h)": waitBugTime,
+                 "待验证的bug": waitVerifyBug, "平均等待验证时间(h)": waitVerifyTime})
+
+        return bugCount
+
+    def sprintBugCountInUser(self, jql):
+        bugDF = pd.DataFrame(self.jiraBug(jql),
+                             columns=["经办人", "bug总数", "修复bug数量", "bug平均修复时间(h)", "未修复bug数量",
+                                      "bug平均等待时间(h)",
+                                      "bug平均验证时间(h)"])
+        self.createExcel(bugDF, "bug统计.xlsx")
 
     def setSchedulerTask(self, hour, minute, job):
         scheduler = BackgroundScheduler()
@@ -434,12 +555,11 @@ class JiraDP(object):
 
     def daySchedulerTask(self):
         for data in groupDingDingTask:
-            self.completedIssueCount(data,
-                                     lambda
-                                         onLineBean: '### {title}:  {totalCount} 个； {timeTitle}:{time}天 ；[点击查看]({link})'.format(
-                                         title=onLineBean["title"],
-                                         totalCount=onLineBean["totalCount"],
-                                         time=onLineBean["meanTime"],
-                                         timeTitle=onLineBean["timeTitle"],
-                                         link=onLineBean["link"]
-                                     ), data["dingDing"])
+            self.countUndoneBug(data,
+                                lambda
+                                    onLineBean: '#### {assignee}: bug总数:{totalCount}个;  等待时间:{time}天;   [点击查看]({link})'.format(
+                                    assignee=onLineBean["name"],
+                                    totalCount=onLineBean["count"],
+                                    time=round(onLineBean["time"] / 24, 1),
+                                    link=onLineBean["link"]
+                                ), data["dingDing"])
